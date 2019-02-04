@@ -46,9 +46,7 @@ public class Principal {
 	private JFrame frame;
 	// private JTextField txtPaginaActual;
 
-	/**
-	 * Launch the application.
-	 */
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -213,50 +211,63 @@ public class Principal {
 		JMenuBar menuBar = new JMenuBar();
 
 		JButton citas = new JButton(clases.get(0));
-		menuBar.add(citas);
-
 		JButton talleres = new JButton(clases.get(1));
-		menuBar.add(talleres);
-
 		JButton vehiculos = new JButton(clases.get(2));
-		menuBar.add(vehiculos);
-
 		JButton clientes = new JButton(clases.get(3));
-		menuBar.add(clientes);
-
 		JButton usuarios = new JButton(clases.get(4));
-		menuBar.add(usuarios);
-
 		JButton vehiculos_tipos = new JButton(clases.get(5));
-		menuBar.add(vehiculos_tipos);
-
+		
+		
+		
 		JSeparator separator_1 = new JSeparator();
-		menuBar.add(separator_1);
-
 		JSeparator separator_2 = new JSeparator();
-		menuBar.add(separator_2);
-
-		// TODO contendra los metodos para exportar y importar datos a la base de datos
+		
 		JButton importar = new JButton("Importar");
+		JButton exportar = new JButton("Exportar");
+		
+		JSeparator separator = new JSeparator();
+
+		JButton logout = new JButton("Logout");
+		
+		//Añadir Botones
+		menuBar.add(citas);	
+		menuBar.add(talleres);
+		menuBar.add(vehiculos);
+		menuBar.add(clientes);
+		menuBar.add(usuarios);
+		menuBar.add(vehiculos_tipos);
+		
+		menuBar.add(separator_1);
+		menuBar.add(separator_2);
 
 		menuBar.add(importar);
 
-		JButton exportar = new JButton("Exportar");
 		menuBar.add(exportar);
 
-		JSeparator separator = new JSeparator();
 		menuBar.add(separator);
-
-		JButton logout = new JButton("Logout");
+		
 		menuBar.add(logout);
+		
 		logout.addActionListener(controlador);
-		logout.setActionCommand("Logout");
-
 		importar.addActionListener(controlador);
-		importar.setActionCommand("importar");
-
 		exportar.addActionListener(controlador);
+		citas.addActionListener(controlador);
+		talleres.addActionListener(controlador);
+		vehiculos.addActionListener(controlador);
+		clientes .addActionListener(controlador);
+		usuarios.addActionListener(controlador);
+		vehiculos_tipos.addActionListener(controlador);
+		
+		
+		logout.setActionCommand("Logout");
+		importar.setActionCommand("importar");
 		exportar.setActionCommand("exportar");
+		citas.setActionCommand("citas");
+		talleres.setActionCommand("talleres");
+		vehiculos.setActionCommand("vehiculos");
+		clientes .setActionCommand("clientes");
+		usuarios.setActionCommand("usuarios");
+		vehiculos_tipos.setActionCommand("vehiculos_tipos");
 		
 	
 		return menuBar;
@@ -330,6 +341,6 @@ public class Principal {
 
 		panel_3.add(listadoTop, BorderLayout.NORTH);
 		panel_3.add(listador, BorderLayout.CENTER);
-
+ 
 	}
 }

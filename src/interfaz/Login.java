@@ -64,13 +64,14 @@ public class Login {
 		JPasswordField txContrasena = new JPasswordField();
 
 		frame = new JFrame();
-		
-		LoginController controlador=new LoginController(frame,txUsuario,txContrasena);
-		
+
+		LoginController controlador = new LoginController(frame, txUsuario, txContrasena);
+
 		frame.setBounds(100, 100, 275, 250);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
+		frame.setVisible(true);
 
 		lblLoginTaller.setFont(new Font("Verdana", Font.BOLD, 18));
 
@@ -94,11 +95,10 @@ public class Login {
 		frame.getContentPane().add(txContrasena);
 		frame.getContentPane().add(lblNewLabel);
 		frame.getContentPane().add(lblUsuario);
-		
+
 		btnAcceder.setActionCommand("acceder");
 		btnAcceder.addActionListener(controlador);
 		btnAcceder.addKeyListener(controlador);
-		
 
 	}
 }
