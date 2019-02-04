@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
@@ -17,6 +19,7 @@ import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.awt.event.ActionEvent;
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JCheckBox;
@@ -24,6 +27,7 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JSeparator;
@@ -31,6 +35,7 @@ import javax.swing.JList;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JComboBox;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -65,6 +70,31 @@ public class Principal {
 	 */
 	public Principal() {
 		initialize();
+	}
+	
+	private JScrollPane crearJTable() {
+		
+		//Temporal
+		Object[][] coldata = { { "Mary", "Campione", "Esquiar", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
+				{ "lukas", "laza", "snow", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
+				{ "jose", "sanchez", "Esquiar", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
+				{ "roberto", "mota", "Esquiar", new Integer(5), new Boolean(false) , new Integer(5), new Integer(5), new Integer(5), new Integer(5)},
+				{ "viktor", "ingi", "snow", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
+				{ "mario", "caraas", "Esquiar", new Integer(5), new Boolean(false) , new Integer(5), new Integer(5), new Integer(5), new Integer(5)},
+				{ "luis", "flores", "trabajar", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
+				{ "Lhucas", "Huml", "Patinar", new Integer(3), new Boolean(true), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
+				{ "Kathya", "Walrath", "Escalar", new Integer(2), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
+				{ "Marcus", "Andrews", "Correr", new Integer(7), new Boolean(true), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
+				{ "Angela", "Lalth", "Nadar", new Integer(4), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) } };
+		
+		String[] columnNames = { "Nombre", "Apellido", "Pasatiempo", "Años de Practica", "Soltero(a)", "Soltero(a)", "Soltero(a)", "Soltero(a)", "Soltero(a)"};
+		
+		
+		final JTable table = new JTable(coldata, columnNames);
+		JScrollPane scrollpane = new JScrollPane(table);
+		table.setPreferredScrollableViewportSize(new Dimension(1000, 500));
+
+		return scrollpane;
 	}
 
 	private JPanel crearNombreClaseSuperior(ArrayList<String> clases) {
@@ -207,7 +237,7 @@ public class Principal {
 
 	}
 
-	private JMenuBar crearBar(ArrayList<String> clases, ArrayList<String> datos_ex) {
+	private JMenuBar crearBar(ArrayList<String> clases) {
 		JMenuBar menuBar = new JMenuBar();
 
 		JButton citas = new JButton(clases.get(0));
@@ -279,6 +309,8 @@ public class Principal {
 	 */
 	private void initialize() {
 
+		HashMap<String, Component> componentesPrincipal = new HashMap<String, Component>();
+		
 		ArrayList<String> nombre = new ArrayList<>();
 		nombre.add("  ");
 		nombre.add("id");
@@ -297,9 +329,6 @@ public class Principal {
 		clases.add("Usuarios");
 		clases.add("Tipos de Vehiculos");
 
-		ArrayList<String> datos = new ArrayList<>();
-		datos.add("Importar");
-		datos.add("Exportar");
 
 		// DEFINIMOS COMPONENTES NECESARIOS
 		frame = new JFrame();
@@ -314,7 +343,7 @@ public class Principal {
 		JPanel panel_filtros = crearFiltros(nombre);
 		JPanel listadoTop = crearListadoValores(nombre);
 		JPanel listador = crearListarDatos(nombre, 20);
-
+		
 		JPanel panel_1 = new JPanel();
 		JPanel panel_2 = new JPanel();
 		JPanel panel_3 = new JPanel();
@@ -326,7 +355,7 @@ public class Principal {
 		panel_3.setLayout(new BorderLayout(0, 0));
 
 		// AÑADIMOS COMPONENTES AL PANEL
-		frame.setJMenuBar(crearBar(clases, datos));
+		frame.setJMenuBar(crearBar(clases));
 		frame.getContentPane().add(panel);
 
 		panel.add(acciones, BorderLayout.NORTH);
@@ -340,7 +369,9 @@ public class Principal {
 		panel_2.add(panel_filtros, BorderLayout.NORTH);
 
 		panel_3.add(listadoTop, BorderLayout.NORTH);
-		panel_3.add(listador, BorderLayout.CENTER);
+		panel_3.add(crearJTable(), BorderLayout.CENTER);
+		
+		//panel_4.add(CrearJTable(), BorderLayout.CENTER);
  
 	}
 }
