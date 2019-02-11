@@ -7,6 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import funciones.funcionesError;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -24,9 +27,6 @@ public class LoginController implements ActionListener, KeyListener {
 		this.frame = frame;
 	}
 
-	public void error_msg(String msg, String msgSup) {
-		JOptionPane.showMessageDialog(frame, msg, msgSup, JOptionPane.ERROR_MESSAGE);
-	}
 
 	// TODO implementar que se comprubee con la api si el usuario es correcto
 	@Override
@@ -42,7 +42,7 @@ public class LoginController implements ActionListener, KeyListener {
 		if (comando.equalsIgnoreCase("Acceder")) {
 			// Si algun campo esta vacio lanzamos error y borramos valores de los campos
 			if (userName.isEmpty() || userpass.isEmpty()) {
-				error_msg("Los campos no pueden estar vacios", "Campos en blanco");
+				funcionesError.error_msg(frame,"Los campos no pueden estar vacios", "Campos en blanco");
 				vaciarCampos();
 			} else {
 
@@ -57,7 +57,7 @@ public class LoginController implements ActionListener, KeyListener {
 					new Principal();
 				} else {
 					// Lanzamos mensaje de error
-					error_msg("Usuario y/o Contraseña no validos", "Acceso no autorizado");
+					funcionesError.error_msg(frame,"Usuario y/o Contraseña no validos", "Acceso no autorizado");
 					// Establecemos los valores en vacios
 					vaciarCampos();
 
