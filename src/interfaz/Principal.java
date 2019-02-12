@@ -11,6 +11,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
+import clases.Taller;
+import clases.dbConexion;
 import controller.PrincipalController;
 
 import java.awt.GridBagLayout;
@@ -18,6 +20,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.awt.event.ActionEvent;
@@ -47,10 +54,11 @@ import javax.swing.SwingConstants;
 
 public class Principal {
 
-	public PrincipalController controlador = new PrincipalController();
+	HashMap<String, Component> componentes = new HashMap<String, Component>();
+	public PrincipalController controlador = new PrincipalController(componentes);
 	private JFrame frame;
+	private static int paginador = 20;
 	// private JTextField txtPaginaActual;
-
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -71,26 +79,10 @@ public class Principal {
 	public Principal() {
 		initialize();
 	}
-	
+
 	private JScrollPane crearJTable() {
-		
-		//Temporal
-		Object[][] coldata = { { "Mary", "Campione", "Esquiar", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
-				{ "lukas", "laza", "snow", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
-				{ "jose", "sanchez", "Esquiar", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
-				{ "roberto", "mota", "Esquiar", new Integer(5), new Boolean(false) , new Integer(5), new Integer(5), new Integer(5), new Integer(5)},
-				{ "viktor", "ingi", "snow", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
-				{ "mario", "caraas", "Esquiar", new Integer(5), new Boolean(false) , new Integer(5), new Integer(5), new Integer(5), new Integer(5)},
-				{ "luis", "flores", "trabajar", new Integer(5), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
-				{ "Lhucas", "Huml", "Patinar", new Integer(3), new Boolean(true), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
-				{ "Kathya", "Walrath", "Escalar", new Integer(2), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
-				{ "Marcus", "Andrews", "Correr", new Integer(7), new Boolean(true), new Integer(5), new Integer(5), new Integer(5), new Integer(5) },
-				{ "Angela", "Lalth", "Nadar", new Integer(4), new Boolean(false), new Integer(5), new Integer(5), new Integer(5), new Integer(5) } };
-		
-		String[] columnNames = { "Nombre", "Apellido", "Pasatiempo", "Años de Practica", "Soltero(a)", "Soltero(a)", "Soltero(a)", "Soltero(a)", "Soltero(a)"};
-		
-		
-		final JTable table = new JTable(coldata, columnNames);
+
+		final JTable table = new JTable(Taller.getTalleres(0, 20), Taller.getTalleresMeta());
 		JScrollPane scrollpane = new JScrollPane(table);
 		table.setPreferredScrollableViewportSize(new Dimension(1000, 500));
 
@@ -115,26 +107,40 @@ public class Principal {
 
 	private JPanel crearBotonesPaginador() {
 
-		JPanel paginatorController = new JPanel();
+		JPanel panelPaginatorController = new JPanel();
 
-		JTextField txtPaginaActual = new JTextField();
-		// TODO debe contener un int con la pagina actual, que se sacaria diviendo las
-		// flas del array por el numero de paginador escocido
-		txtPaginaActual.setText("Pagina Actual");
-		txtPaginaActual.setColumns(10);
+		JTextField txtPaginadorPaginaActual = new JTextField();
+		txtPaginadorPaginaActual.setText("Pagina Actual");
+		txtPaginadorPaginaActual.setColumns(10);
+		
+		txtPaginadorPaginaActual.setEditable(false);
 
-		JButton btnsiguente = new JButton(">");
-		JButton btnultimo = new JButton(">>");
-		JButton btnprimero = new JButton("<<");
-		JButton btnanterior = new JButton("<");
+		JButton btnPaginadorSiguente = new JButton(">");
+		JButton btnPaginadorUltimo = new JButton(">>");
+		JButton btnPaginadorPrimero = new JButton("<<");
+		JButton btnPaginadorAnterior = new JButton("<");
 
-		paginatorController.add(btnprimero);
-		paginatorController.add(btnanterior);
-		paginatorController.add(txtPaginaActual);
-		paginatorController.add(btnsiguente);
-		paginatorController.add(btnultimo);
+		
+		//HASMAP DE COMPONENTES DEL PAGINADOR
+		componentes.put("btnPaginadorSiguente", btnPaginadorSiguente);
+		componentes.put("btnPaginadorUltimo", btnPaginadorUltimo);
+		componentes.put("btnPaginadorPrimero",btnPaginadorPrimero );
+		componentes.put("btnPaginadorAnterior",btnPaginadorAnterior );
+		componentes.put("panelPaginatorController", panelPaginatorController);
+		componentes.put("txtPaginadorPaginaActual", txtPaginadorPaginaActual);
+		
+		panelPaginatorController.add(componentes.get("btnPaginadorPrimero"));
+		panelPaginatorController.add(componentes.get("btnPaginadorAnterior"));
+		panelPaginatorController.add(componentes.get("txtPaginadorPaginaActual"));
+		panelPaginatorController.add(componentes.get("btnPaginadorSiguente"));
+		panelPaginatorController.add(componentes.get("btnPaginadorUltimo"));
 
-		return paginatorController;
+		btnPaginadorSiguente.addActionListener(controlador);
+		btnPaginadorUltimo.addActionListener(controlador);
+		btnPaginadorPrimero.addActionListener(controlador);
+		btnPaginadorAnterior.addActionListener(controlador);
+
+		return panelPaginatorController;
 	}
 
 	private JPanel crearListarDatos(ArrayList<String> data, int paginas) {
@@ -237,36 +243,48 @@ public class Principal {
 
 	}
 
-	private JMenuBar crearBar(ArrayList<String> clases) {
+	private JMenuBar crearBar() {
 		JMenuBar menuBar = new JMenuBar();
 
-		JButton citas = new JButton(clases.get(0));
-		JButton talleres = new JButton(clases.get(1));
-		JButton vehiculos = new JButton(clases.get(2));
-		JButton clientes = new JButton(clases.get(3));
-		JButton usuarios = new JButton(clases.get(4));
-		JButton vehiculos_tipos = new JButton(clases.get(5));
-		
-		
-		
+		Connection conn = dbConexion.getConnection();
+		ArrayList<String> databaseMeta = new ArrayList();
+		DatabaseMetaData md;
+		try {
+			md = conn.getMetaData();
+
+			ResultSet rs = md.getTables(null, null, "%", null);
+			while (rs.next()) {
+				databaseMeta.add(rs.getString(3).toUpperCase());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		JButton citas = new JButton(databaseMeta.get(0));
+		JButton clientes = new JButton(databaseMeta.get(1));
+		JButton talleres = new JButton(databaseMeta.get(2));
+		JButton usuarios = new JButton(databaseMeta.get(3));
+		JButton vehiculos = new JButton(databaseMeta.get(4));
+		JButton vehiculos_tipos = new JButton(databaseMeta.get(5));
+
 		JSeparator separator_1 = new JSeparator();
 		JSeparator separator_2 = new JSeparator();
-		
+
 		JButton importar = new JButton("Importar");
 		JButton exportar = new JButton("Exportar");
-		
+
 		JSeparator separator = new JSeparator();
 
 		JButton logout = new JButton("Logout");
-		
-		//Añadir Botones
-		menuBar.add(citas);	
+
+		// Añadir Botones
+		menuBar.add(citas);
 		menuBar.add(talleres);
 		menuBar.add(vehiculos);
 		menuBar.add(clientes);
 		menuBar.add(usuarios);
 		menuBar.add(vehiculos_tipos);
-		
+
 		menuBar.add(separator_1);
 		menuBar.add(separator_2);
 
@@ -275,31 +293,29 @@ public class Principal {
 		menuBar.add(exportar);
 
 		menuBar.add(separator);
-		
+
 		menuBar.add(logout);
-		
+
 		logout.addActionListener(controlador);
 		importar.addActionListener(controlador);
 		exportar.addActionListener(controlador);
 		citas.addActionListener(controlador);
 		talleres.addActionListener(controlador);
 		vehiculos.addActionListener(controlador);
-		clientes .addActionListener(controlador);
+		clientes.addActionListener(controlador);
 		usuarios.addActionListener(controlador);
 		vehiculos_tipos.addActionListener(controlador);
-		
-		
+
 		logout.setActionCommand("Logout");
 		importar.setActionCommand("importar");
 		exportar.setActionCommand("exportar");
 		citas.setActionCommand("citas");
 		talleres.setActionCommand("talleres");
 		vehiculos.setActionCommand("vehiculos");
-		clientes .setActionCommand("clientes");
+		clientes.setActionCommand("clientes");
 		usuarios.setActionCommand("usuarios");
 		vehiculos_tipos.setActionCommand("vehiculos_tipos");
-		
-	
+
 		return menuBar;
 
 	}
@@ -310,16 +326,6 @@ public class Principal {
 	private void initialize() {
 
 		HashMap<String, Component> componentesPrincipal = new HashMap<String, Component>();
-		
-		ArrayList<String> nombre = new ArrayList<>();
-		nombre.add("  ");
-		nombre.add("id");
-		nombre.add("nombre");
-		nombre.add("apellidos");
-		nombre.add("numero");
-		nombre.add("calle");
-		nombre.add("nacionalidad");
-		nombre.add("fecha_nacimiento");
 
 		ArrayList<String> clases = new ArrayList<>();
 		clases.add("Citas");
@@ -328,7 +334,6 @@ public class Principal {
 		clases.add("Clientes");
 		clases.add("Usuarios");
 		clases.add("Tipos de Vehiculos");
-
 
 		// DEFINIMOS COMPONENTES NECESARIOS
 		frame = new JFrame();
@@ -340,10 +345,10 @@ public class Principal {
 
 		JPanel panel = new JPanel();
 		JPanel acciones = crearAcciones();
-		JPanel panel_filtros = crearFiltros(nombre);
-		JPanel listadoTop = crearListadoValores(nombre);
-		JPanel listador = crearListarDatos(nombre, 20);
-		
+		JPanel panel_filtros = crearFiltros(Taller.getTalleresMetaArr());
+		// JPanel listadoTop = crearListadoValores(Taller.getTalleresMetaArr());
+		JPanel listador = crearListarDatos(Taller.getTalleresMetaArr(), 20);
+
 		JPanel panel_1 = new JPanel();
 		JPanel panel_2 = new JPanel();
 		JPanel panel_3 = new JPanel();
@@ -355,7 +360,7 @@ public class Principal {
 		panel_3.setLayout(new BorderLayout(0, 0));
 
 		// AÑADIMOS COMPONENTES AL PANEL
-		frame.setJMenuBar(crearBar(clases));
+		frame.setJMenuBar(crearBar());
 		frame.getContentPane().add(panel);
 
 		panel.add(acciones, BorderLayout.NORTH);
@@ -368,10 +373,10 @@ public class Principal {
 		panel_2.add(panel_3, BorderLayout.CENTER);
 		panel_2.add(panel_filtros, BorderLayout.NORTH);
 
-		panel_3.add(listadoTop, BorderLayout.NORTH);
+		// panel_3.add(listadoTop, BorderLayout.NORTH);
 		panel_3.add(crearJTable(), BorderLayout.CENTER);
-		
-		//panel_4.add(CrearJTable(), BorderLayout.CENTER);
- 
+
+		// panel_4.add(CrearJTable(), BorderLayout.CENTER);
+
 	}
 }

@@ -1,58 +1,219 @@
 package clases;
 
+import java.awt.print.Book;
 import java.beans.Statement;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.swing.JCheckBox;
+import javax.xml.crypto.Data;
 
 import org.mariadb.jdbc.MariaDbStatement;
 
 public class Taller {
 	// Variables.
-	private String nombre, direccion, telefono, latitud, longitud;
+	private String nombre, direccion, telefono;
+	private float latitud, longitud;
 
-	public Taller(String nombre, String direccion, String telefono, String latitud, String longitud) {
+	public Taller(String nombre, String direccion, String telefono, float latitud, float longitud) {
 
 		setDireccion(direccion);
-		setLatitud(latitud);
+		setLongitud(latitud);
 		setTelefono(telefono);
 		setNombre(nombre);
 		setLongitud(longitud);
 	}
 
-	public static void getTalleres() {
-		Connection cn = dbConexion.getConnection();
-		try {
-			MariaDbStatement st = (MariaDbStatement) cn.createStatement();
-			String sql1 = "SELECT * FROM taller";
-			ResultSet rs = st.executeQuery(sql1);
+	/**
+	 * Funcion que nos devulve los metadatos de la tabla talleres es decir las
+	 * cabeceras de la tabla
+	 * 
+	 * @return
+	 */
+	public static String[] getTalleresMeta() {
 
-		} catch (SQLException e) {
-			System.out.println("Ha ocurrido un error al intentar selecionar los talleres");
-			e.printStackTrace();
+		String query = "Select * from taller";
+		Connection conn = (Connection) dbConexion.getConnection();
+		ArrayList<String> metadatos = new ArrayList<String>();
+		java.sql.Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
 		}
+
+		try {
+			// EJECUTAMLS SENTENCIA
+			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
+			for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
+				// La metemos en un array
+				metadatos.add(rs.getMetaData().getColumnName(x).toUpperCase());
+			}
+			metadatos.add("Seleccionar".toUpperCase());
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		String[] cabeceras = new String[metadatos.size()];
+		
+		for (int i = 0; i < metadatos.size();i++) {
+			cabeceras[i] = metadatos.get(i);
+		}
+		return cabeceras;
+	}
+
+	
+	/**
+	 * Nos devuelve los metadatos de la tabla taller pero en formato arrayList
+	 * 
+	 * @return
+	 */
+	public static ArrayList<String> getTalleresMetaArr() {
+
+		String query = "Select * from taller";
+		Connection conn = (Connection) dbConexion.getConnection();
+		ArrayList<String> metadatos = new ArrayList<>();
+		java.sql.Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+		}
+
+		try {
+			// EJECUTAMLS SENTENCIA
+			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
+			for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
+				// La metemos en un array
+				metadatos.add(rs.getMetaData().getColumnName(x).toUpperCase());
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return metadatos;
 
 	}
 
-	public static void newTaller(String nombre, String direccion, String telefono, String latitud, String longitud) {
-		Connection cn = dbConexion.getConnection();
-		//MariaDbStatement sentencia;
-		Statement sentencia;
-		try {
-			MariaDbStatement st = (MariaDbStatement) cn.createStatement();
-			String sql1 = "Insert into taller VALUES (?,?,?,?,?)";
-			sentencia = (Statement) cn.prepareStatement(sql1);
-			sentencia.setString(1, "Gimeno");
-			sentencia.setString(2, "Guardamar del segura, poligono de Santan Ana");
-			sentencia.setString(3, "966728227");
-			sentencia.setString(4, "1924384");
-			sentencia.setString(5, "2442424");
-			sentencia.executeUpdate();
+	/**
+	 * Funcion que nos devuelve todos los talleres en formato arrayList
+	 * 
+	 * @return
+	 */
+	public static ArrayList<Taller> getTalleresArr() {
+		String query = "Select * from taller order by nombre asc";
+		Connection conn = (Connection) dbConexion.getConnection();
+		ArrayList<Taller> talleres = new ArrayList<>();
 
-		} catch (SQLException e) {
-			System.out.println("Ha ocurrido un error al intentar selecionar los talleres");
-			e.printStackTrace();
+		java.sql.Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
 		}
+
+		try {
+			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
+			while (rs.next()) {
+				String nombreTaller = rs.getString("nombre");
+				String direccionTaller = rs.getString("direccion");
+				String telefonoTaller = rs.getString("telefono");
+				float latitudTaller = rs.getFloat("latitud");
+				float longitudTaller = rs.getFloat("longitud");
+				Taller t1 = new Taller(nombreTaller, direccionTaller, telefonoTaller, latitudTaller, longitudTaller);
+				talleres.add(t1);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return talleres;
+
+	}
+
+	/**
+	 * Funcion que nos devuelve todos los talleres desde hasta la posicion
+	 * 
+	 * @return
+	 */
+	public static ArrayList<Taller> getTalleresArr(int ini, int fin) {
+		String query = "Select * from taller LIMIT" + ini + " , " + fin;
+		Connection conn = (Connection) dbConexion.getConnection();
+		ArrayList<Taller> talleres = new ArrayList<>();
+		int colcount = 0;
+		java.sql.Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+		}
+
+		try {
+			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
+			while (rs.next()) {
+				String nombreTaller = rs.getString("nombre");
+				String direccionTaller = rs.getString("direccion");
+				String telefonoTaller = rs.getString("telefono");
+				float latitudTaller = rs.getFloat("latitud");
+				float longitudTaller = rs.getFloat("longitud");
+				Taller t1 = new Taller(nombreTaller, direccionTaller, telefonoTaller, latitudTaller, longitudTaller);
+				talleres.add(t1);
+			}
+			colcount = rs.getMetaData().getColumnCount();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		Object[][] multi = new Object[fin - ini][colcount];
+
+		/*
+		 * for (int i = 0; i < fin-ini; i++) { for (int j = 0; j < colcount; j++) {
+		 * multi[i]=talleres.get(i).getNombre(); } }
+		 */
+
+		return talleres;
+
+	}
+
+	public static Object[][] getTalleres(int ini, int fin) {
+		// Sentencia
+		String query = "Select * from taller LIMIT " + ini + " , " + fin;
+		// COnexion
+		Connection conn = (Connection) dbConexion.getConnection();
+		// Arraylist donde guardaremos el Resulset
+		ArrayList<Taller> talleres = new ArrayList<Taller>();
+
+		java.sql.Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+		}
+
+		try {
+			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
+			while (rs.next()) {
+				Taller t1 = new Taller(rs.getString("nombre"), rs.getString("direccion"), rs.getString("telefono"),
+						rs.getFloat("latitud"), rs.getFloat("longitud"));
+				talleres.add(t1);
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		Object[][] datosTaller = new Object[fin - ini][6];
+		for (int i = 0; i < talleres.size(); i++) {
+			datosTaller[i][0] = talleres.get(i).getNombre();
+			datosTaller[i][1] = talleres.get(i).getDireccion();
+			datosTaller[i][2] = talleres.get(i).getTelefono();
+			datosTaller[i][3] = talleres.get(i).getLatitud();
+			datosTaller[i][4] = talleres.get(i).getLongitud();
+			datosTaller[i][5] = new JCheckBox("seleccionar", false);
+		}
+
+		return datosTaller;
 
 	}
 
@@ -80,23 +241,23 @@ public class Taller {
 		this.telefono = telefono;
 	}
 
-	public String getLatitud() {
+	public float getLatitud() {
 		return latitud;
 	}
 
-	public void setLatitud(String latitud) {
+	public void setLatitud(float latitud) {
 		this.latitud = latitud;
 	}
 
-	public String getLongitud() {
+	public float getLongitud() {
 		return longitud;
 	}
 
-	public void setLongitud(String longitud) {
+	public void setLongitud(float longitud) {
 		this.longitud = longitud;
 	}
 
 	public static void main(String[] args) {
-		getTalleres();
+
 	}
 }
