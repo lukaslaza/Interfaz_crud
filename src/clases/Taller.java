@@ -138,8 +138,8 @@ public class Taller {
 	 * 
 	 * @return
 	 */
-	public static ArrayList<Taller> getTalleresArr(int ini, int fin) {
-		String query = "Select * from taller LIMIT" + ini + " , " + fin;
+	public static ArrayList<Taller> getTalleresArr(int resultados, int pagina) {
+		String query = "Select * from taller LIMIT" + pagina + " , " + pagina+resultados;
 		Connection conn = (Connection) dbConexion.getConnection();
 		ArrayList<Taller> talleres = new ArrayList<>();
 		int colcount = 0;
@@ -166,7 +166,7 @@ public class Taller {
 			System.out.println(e.getMessage());
 		}
 
-		Object[][] multi = new Object[fin - ini][colcount];
+		//Object[][] multi = new Object[pagina - ini][colcount];
 
 		/*
 		 * for (int i = 0; i < fin-ini; i++) { for (int j = 0; j < colcount; j++) {
@@ -210,7 +210,7 @@ public class Taller {
 			datosTaller[i][2] = talleres.get(i).getTelefono();
 			datosTaller[i][3] = talleres.get(i).getLatitud();
 			datosTaller[i][4] = talleres.get(i).getLongitud();
-			datosTaller[i][5] = new JCheckBox("seleccionar", false);
+			datosTaller[i][5] = new Boolean(false);
 		}
 
 		return datosTaller;

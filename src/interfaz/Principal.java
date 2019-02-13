@@ -33,6 +33,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JTree;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -51,13 +54,15 @@ import java.awt.Insets;
 import java.awt.Window;
 
 import javax.swing.SwingConstants;
+//TODO PONER TAMAÑO MINIMO A LA VENTANA
 
 public class Principal {
 
 	HashMap<String, Component> componentes = new HashMap<String, Component>();
 	public PrincipalController controlador = new PrincipalController(componentes);
 	private JFrame frame;
-	private static int paginador = 20;
+	private static int pagina = 0;
+	private static int columnasPagina = 20;
 	// private JTextField txtPaginaActual;
 
 	public static void main(String[] args) {
@@ -79,10 +84,14 @@ public class Principal {
 	public Principal() {
 		initialize();
 	}
+	
+	private void listarDatos() {
+		
+	}
 
 	private JScrollPane crearJTable() {
 
-		final JTable table = new JTable(Taller.getTalleres(0, 20), Taller.getTalleresMeta());
+		final JTable table = new JTable(Taller.getTalleres(pagina, columnasPagina), Taller.getTalleresMeta());
 		JScrollPane scrollpane = new JScrollPane(table);
 		table.setPreferredScrollableViewportSize(new Dimension(1000, 500));
 
@@ -107,40 +116,44 @@ public class Principal {
 
 	private JPanel crearBotonesPaginador() {
 
-		JPanel panelPaginatorController = new JPanel();
+		JPanel panelPaginador = new JPanel();
 
-		JTextField txtPaginadorPaginaActual = new JTextField();
-		txtPaginadorPaginaActual.setText("Pagina Actual");
-		txtPaginadorPaginaActual.setColumns(10);
-		
-		txtPaginadorPaginaActual.setEditable(false);
+		SpinnerModel paginadorValoresSpinner = new SpinnerNumberModel(35, 35, 3500, 5);
+		SpinnerModel paginaValoresSpinner = new SpinnerNumberModel(1, 1, 300, 1);
+
+		JSpinner paginadorSpinner = new JSpinner(paginadorValoresSpinner);
+		paginadorSpinner.setBounds(100, 100, 50, 30);
+
+		JSpinner paginaSpinner = new JSpinner(paginaValoresSpinner);
+		paginaSpinner.setBounds(100, 100, 50, 30);
 
 		JButton btnPaginadorSiguente = new JButton(">");
 		JButton btnPaginadorUltimo = new JButton(">>");
 		JButton btnPaginadorPrimero = new JButton("<<");
 		JButton btnPaginadorAnterior = new JButton("<");
 
-		
-		//HASMAP DE COMPONENTES DEL PAGINADOR
+		// HASMAP DE COMPONENTES DEL PAGINADOR
 		componentes.put("btnPaginadorSiguente", btnPaginadorSiguente);
 		componentes.put("btnPaginadorUltimo", btnPaginadorUltimo);
-		componentes.put("btnPaginadorPrimero",btnPaginadorPrimero );
-		componentes.put("btnPaginadorAnterior",btnPaginadorAnterior );
-		componentes.put("panelPaginatorController", panelPaginatorController);
-		componentes.put("txtPaginadorPaginaActual", txtPaginadorPaginaActual);
-		
-		panelPaginatorController.add(componentes.get("btnPaginadorPrimero"));
-		panelPaginatorController.add(componentes.get("btnPaginadorAnterior"));
-		panelPaginatorController.add(componentes.get("txtPaginadorPaginaActual"));
-		panelPaginatorController.add(componentes.get("btnPaginadorSiguente"));
-		panelPaginatorController.add(componentes.get("btnPaginadorUltimo"));
+		componentes.put("btnPaginadorPrimero", btnPaginadorPrimero);
+		componentes.put("btnPaginadorAnterior", btnPaginadorAnterior);
+		componentes.put("panelPaginador", panelPaginador);
+		componentes.put("paginaSpinner", paginaSpinner);
+		componentes.put("paginadorSpinner", paginadorSpinner);
+
+		panelPaginador.add(paginadorSpinner);
+		panelPaginador.add(btnPaginadorPrimero);
+		panelPaginador.add(btnPaginadorAnterior);
+		panelPaginador.add(paginaSpinner);
+		panelPaginador.add(btnPaginadorSiguente);
+		panelPaginador.add(btnPaginadorUltimo);
 
 		btnPaginadorSiguente.addActionListener(controlador);
 		btnPaginadorUltimo.addActionListener(controlador);
 		btnPaginadorPrimero.addActionListener(controlador);
 		btnPaginadorAnterior.addActionListener(controlador);
 
-		return panelPaginatorController;
+		return panelPaginador;
 	}
 
 	private JPanel crearListarDatos(ArrayList<String> data, int paginas) {
@@ -167,6 +180,10 @@ public class Principal {
 		}
 		return listado;
 	}
+	
+	public static void logout(JFrame fr) {
+		fr.dispose();
+	}
 
 	private JPanel crearListadoValores(ArrayList<String> data) {
 
@@ -181,31 +198,42 @@ public class Principal {
 		return listadoTop;
 	}
 
+	/**
+	 * FINALIZADO NO TOCAR
+	 * 
+	 * Crea los 3 botones de las acciones de crear, borrar y editar
+	 * 
+	 * @return
+	 */
 	private JPanel crearAcciones() {
 
 		JPanel panel_acciones = new JPanel();
 
 		panel_acciones.setLayout(new GridLayout(1, 3, 0, 0));
 
-		JButton crearData = new JButton("Crear");
-		JButton editarData = new JButton("Editar");
-		JButton borrarData = new JButton("Borrar");
+		JButton accionesCrearDato = new JButton("Crear");
+		JButton accionesEditarDato = new JButton("Editar");
+		JButton accionesBorrarDato = new JButton("Borrar");
 
-		panel_acciones.add(crearData);
-		panel_acciones.add(editarData);
-		panel_acciones.add(borrarData);
+		componentes.put("accionesCrearDato", accionesCrearDato);
+		componentes.put("accionesEditarDato", accionesEditarDato);
+		componentes.put("accionesBorrarDato", accionesBorrarDato);
 
-		borrarData.setBackground(new Color(255, 51, 0));
-		editarData.setBackground(new Color(255, 255, 51));
-		crearData.setBackground(new Color(153, 255, 102));
+		panel_acciones.add(componentes.get("accionesCrearDato"));
+		panel_acciones.add(componentes.get("accionesEditarDato"));
+		panel_acciones.add(componentes.get("accionesBorrarDato"));
 
-		borrarData.addActionListener(controlador);
-		editarData.addActionListener(controlador);
-		crearData.addActionListener(controlador);
+		accionesBorrarDato.setBackground(new Color(255, 51, 0));
+		accionesEditarDato.setBackground(new Color(255, 255, 51));
+		accionesCrearDato.setBackground(new Color(153, 255, 102));
 
-		borrarData.setActionCommand("borrar");
-		editarData.setActionCommand("editar");
-		crearData.setActionCommand("crear");
+		accionesBorrarDato.addActionListener(controlador);
+		accionesEditarDato.addActionListener(controlador);
+		accionesCrearDato.addActionListener(controlador);
+
+		accionesBorrarDato.setActionCommand("borrar");
+		accionesEditarDato.setActionCommand("editar");
+		accionesCrearDato.setActionCommand("crear");
 
 		// TODO ACTIONLISTENER
 
@@ -218,17 +246,21 @@ public class Principal {
 
 		panel_filtros.setLayout(new GridLayout(1, data.size(), 0, 0));
 
-		JButton btnBorrarFiltros = new JButton("Borrar Filtros");
-		panel_filtros.add(btnBorrarFiltros);
 		for (int i = 0; i < data.size(); i++) {
-			panel_filtros.add(new JLabel(data.get(i)));
-			if (i == 0) {
-
-			} else {
-				panel_filtros.add(new JTextField());
-			}
-
+			panel_filtros.add(new JLabel(data.get(i).toUpperCase() + "--> "));
+			panel_filtros.add(new JTextField());
 		}
+
+		JButton btnFiltrosBuscar = new JButton("Buscar");
+		componentes.put("btnFiltrosBuscar", btnFiltrosBuscar);
+		btnFiltrosBuscar.setActionCommand("filtrosBuscar");
+		btnFiltrosBuscar.addActionListener(controlador);
+		panel_filtros.add(btnFiltrosBuscar);
+		JButton btnFiltrosBorrar = new JButton("Borrar");
+		componentes.put("btnFiltrosBorrar", btnFiltrosBorrar);
+		btnFiltrosBorrar.setActionCommand("borrarFiltros");
+		btnFiltrosBorrar.addActionListener(controlador);
+		panel_filtros.add(btnFiltrosBorrar);
 
 		return panel_filtros;
 	}
@@ -243,9 +275,12 @@ public class Principal {
 
 	}
 
+	
+	//TODO HACER QUE CUANDO PULSE LOGOUT SE CIERRE LA VENTANA Y SE CREE UN NUEVO LOGIN
 	private JMenuBar crearBar() {
 		JMenuBar menuBar = new JMenuBar();
 
+		// Consigue los nombres de las tablas de la base de datos
 		Connection conn = dbConexion.getConnection();
 		ArrayList<String> databaseMeta = new ArrayList();
 		DatabaseMetaData md;
@@ -260,23 +295,24 @@ public class Principal {
 			e.printStackTrace();
 		}
 
+//Añadimos el texto conseguido anteriormente a los botones
 		JButton citas = new JButton(databaseMeta.get(0));
 		JButton clientes = new JButton(databaseMeta.get(1));
 		JButton talleres = new JButton(databaseMeta.get(2));
 		JButton usuarios = new JButton(databaseMeta.get(3));
 		JButton vehiculos = new JButton(databaseMeta.get(4));
-		JButton vehiculos_tipos = new JButton(databaseMeta.get(5));
+		JButton vehiculos_tipos = new JButton(databaseMeta.get(5).replace("_", " "));
 
 		JSeparator separator_1 = new JSeparator();
 		JSeparator separator_2 = new JSeparator();
 
-		JButton importar = new JButton("Importar");
-		JButton exportar = new JButton("Exportar");
+		JButton importar = new JButton("Importar".toUpperCase());
+		JButton exportar = new JButton("Exportar".toUpperCase());
 
 		JSeparator separator = new JSeparator();
 
-		JButton logout = new JButton("Logout");
-
+		JButton logout = new JButton("Logout".toUpperCase());
+		
 		// Añadir Botones
 		menuBar.add(citas);
 		menuBar.add(talleres);
@@ -296,7 +332,7 @@ public class Principal {
 
 		menuBar.add(logout);
 
-		logout.addActionListener(controlador);
+		//logout.addActionListener(controlador);
 		importar.addActionListener(controlador);
 		exportar.addActionListener(controlador);
 		citas.addActionListener(controlador);
@@ -306,7 +342,7 @@ public class Principal {
 		usuarios.addActionListener(controlador);
 		vehiculos_tipos.addActionListener(controlador);
 
-		logout.setActionCommand("Logout");
+		//logout.setActionCommand("Logout");
 		importar.setActionCommand("importar");
 		exportar.setActionCommand("exportar");
 		citas.setActionCommand("citas");
@@ -336,11 +372,12 @@ public class Principal {
 		clases.add("Tipos de Vehiculos");
 
 		// DEFINIMOS COMPONENTES NECESARIOS
-		frame = new JFrame();
-		frame.setBounds(100, 100, 1000, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout(0, 0));
-		frame.setVisible(true);
+		Frame framePrincipal = new JFrame();
+		framePrincipal.setBounds(100, 100, 1000, 700);
+		((JFrame) framePrincipal).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		((JFrame) framePrincipal).getContentPane().setLayout(new BorderLayout(0, 0));
+		framePrincipal.setVisible(true);
+		componentesPrincipal.put("framePrincipal", framePrincipal);
 		// frame.setMinimumSize(new Dimension(1600,700));
 
 		JPanel panel = new JPanel();
@@ -360,14 +397,14 @@ public class Principal {
 		panel_3.setLayout(new BorderLayout(0, 0));
 
 		// AÑADIMOS COMPONENTES AL PANEL
-		frame.setJMenuBar(crearBar());
-		frame.getContentPane().add(panel);
+		((JFrame) framePrincipal).setJMenuBar(crearBar());
+		((JFrame) framePrincipal).getContentPane().add(panel);
 
 		panel.add(acciones, BorderLayout.NORTH);
 		panel.add(panel_1, BorderLayout.CENTER);
 
 		panel_1.add(panel_2, BorderLayout.CENTER);
-		panel_1.add(crearNombreClaseSuperior(clases), BorderLayout.NORTH);
+		// panel_1.add(crearNombreClaseSuperior(clases), BorderLayout.NORTH);
 		panel_1.add(crearBotonesPaginador(), BorderLayout.SOUTH);
 
 		panel_2.add(panel_3, BorderLayout.CENTER);
@@ -378,5 +415,21 @@ public class Principal {
 
 		// panel_4.add(CrearJTable(), BorderLayout.CENTER);
 
+	}
+
+	public static int getPagina() {
+		return pagina;
+	}
+
+	public static void setPagina(int pagina) {
+		Principal.pagina = pagina;
+	}
+
+	public static int getColumnasPagina() {
+		return columnasPagina;
+	}
+
+	public static void setColumnasPagina(int columnasPagina) {
+		Principal.columnasPagina = columnasPagina;
 	}
 }

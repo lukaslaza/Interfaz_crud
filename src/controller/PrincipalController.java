@@ -8,11 +8,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
 
+import javax.swing.JFrame;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import interfaz.Exportador;
 import interfaz.Importador;
 import interfaz.Login;
+import interfaz.Principal;
 
-public class PrincipalController implements ActionListener, KeyListener {
+public class PrincipalController implements ActionListener, KeyListener, ChangeListener {
 	
 	HashMap<String, Component> componentesImportador=new HashMap<String, Component>();
 	
@@ -95,8 +100,16 @@ public class PrincipalController implements ActionListener, KeyListener {
 	}
 
 	public void logout() {
-		// Frame.dispose();
+		Principal.logout((JFrame) componentesImportador.get("frame"));
 		new Login();
+	}
+
+
+
+	@Override
+	public void stateChanged(ChangeEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
