@@ -70,7 +70,7 @@ public class Principal {
 			public void run() {
 				try {
 					Principal window = new Principal();
-					window.frame.setVisible(true);
+					//window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -89,13 +89,11 @@ public class Principal {
 		
 	}
 
-	private JScrollPane crearJTable() {
+	private TablaListar crearJTable() {
+		TablaListar table = new TablaListar(Taller.getTalleres(pagina, columnasPagina), Taller.getTalleresMeta());
+		//final JTable table = new JTable(Taller.getTalleres(pagina, columnasPagina), Taller.getTalleresMeta());
 
-		final JTable table = new JTable(Taller.getTalleres(pagina, columnasPagina), Taller.getTalleresMeta());
-		JScrollPane scrollpane = new JScrollPane(table);
-		table.setPreferredScrollableViewportSize(new Dimension(1000, 500));
-
-		return scrollpane;
+		return table;
 	}
 
 	private JPanel crearNombreClaseSuperior(ArrayList<String> clases) {
