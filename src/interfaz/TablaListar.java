@@ -21,12 +21,16 @@ public class TablaListar extends JPanel {
         JTable table = new JTable(new MyTableModel(data, columnNames));
         table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         table.setFillsViewportHeight(true);
+       
  
         //Create the scroll pane and add the table to it.
-        JScrollPane scrollPane = new JScrollPane(table);
- 
+        //JScrollPane scrollPane = new JScrollPane(table);
+
         //Add the scroll pane to this panel.
-        add(scrollPane);
+        //add(scrollPane);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(table);
+        this.add(scrollPane);
     }
  
     class MyTableModel extends AbstractTableModel {

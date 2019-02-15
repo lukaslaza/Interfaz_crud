@@ -73,42 +73,42 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 
 		if (accion.equalsIgnoreCase("citas")) {
 			Principal.setClaseActual("cita");
-			Principal.listarDatos(componentesPrincipal);
+			Principal.listarDatos(this,componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("clientes")) {
 			Principal.setClaseActual("cliente");
-			Principal.listarDatos(componentesPrincipal);
+			Principal.listarDatos(this,componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos")) {
 			Principal.setClaseActual("vehiculo");
-			Principal.listarDatos(componentesPrincipal);
+			Principal.listarDatos(this,componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("talleres")) {
 			Principal.setClaseActual("taller");
-			Principal.listarDatos(componentesPrincipal);
+			Principal.listarDatos(this,componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos_tipos")) {
 			Principal.setClaseActual("vehiculo_tipo");
-			Principal.listarDatos(componentesPrincipal);
+			Principal.listarDatos(this,componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("usuarios")) {
 			Principal.setClaseActual("usuario");
-			Principal.listarDatos(componentesPrincipal);
+			Principal.listarDatos(this,componentesPrincipal);
 		}
 		
 		if (accion.equalsIgnoreCase("filtrosBuscar")) {
-			Principal.leerFiltros(componentesPrincipal);
+			database.funciones.leerFiltrosTaller(this, componentesPrincipal);
 		}
 		
 		if (accion.equalsIgnoreCase("borrarFiltros")) {
-			Principal.vaciarFiltros(componentesPrincipal);
+			database.funciones.vaciarFiltros(this, componentesPrincipal);
 			System.out.println("borrar");
 		}
 
 	}
 
 	public void logout() {
-		Principal.logout((JFrame) componentesPrincipal.get("frame"));
+		//Principal.logout((JFrame) componentesPrincipal.get("frame"));
 		new Login();
 	}
 

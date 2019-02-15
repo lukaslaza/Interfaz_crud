@@ -64,13 +64,12 @@ import javax.swing.SwingConstants;
 
 public class Principal {
 
-	HashMap<String, Component> componentes = new HashMap<String, Component>();
-	public PrincipalController controlador = new PrincipalController(componentes);
 	private JFrame frame;
 
-	private static String claseActual = "taller";
+	private static String claseActual = "vehiculo";
 	private static int pagina = 0;
 	private static int columnasPagina = 20;
+	private static int totalRegistros = 1000;
 	// private JTextField txtPaginaActual;
 
 	public static void main(String[] args) {
@@ -93,39 +92,14 @@ public class Principal {
 		initialize();
 	}
 
-	public static void listarDatos(HashMap<String, Component> componentes) {
-		switch (getClaseActual()) {
-		case "taller":
-			TablaListar tablaTaller = Principal.crearJTable(Taller.getTalleres(pagina, columnasPagina),
-					Taller.getTalleresMeta());
-			((JPanel) componentes.get("panel_3")).add(tablaTaller, BorderLayout.CENTER);
-			// panel_3.add(Principal.crearJTable(Usuario.getUsuarios(),
-			// Usuario.getUsuarioColumnNames()), BorderLayout.CENTER);
-			break;
-		case "cliente":
-			TablaListar tablaCliente = Principal.crearJTable(Cliente.getClientes(pagina, columnasPagina),
-					Cliente.getClientesMeta());
-			tablaCliente.validate();
-			((JPanel) componentes.get("panel_3")).invalidate();
-			((JPanel) componentes.get("panel_3")).add(tablaCliente, BorderLayout.CENTER);
-			((JPanel) componentes.get("panel_3")).revalidate();
-			((JPanel) componentes.get("panel_3")).repaint();
-		case "cita":
+	public static void listarDatos(PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
+		System.out.println(getClaseActual());
+		
+			TablaListar tablaTaller = Principal.crearJTable(database.funciones.getDatos(pagina, columnasPagina),
+					database.funciones.getMetadatosTabla());
+			((JPanel) componentesPrincipal.get("panel_listar")).add(tablaTaller, BorderLayout.CENTER);
 
-			break;
-		case "vehiculo":
-
-			break;
-		case "vehiculo_tipo":
-
-			break;
-		case "usuario":
-
-			break;
-
-		default:
-			break;
-		}
 	}
 
 	/**
@@ -140,29 +114,14 @@ public class Principal {
 		return table;
 	}
 
-	private JPanel crearNombreClaseSuperior(ArrayList<String> clases) {
-		JPanel panel_clase = new JPanel();
-
-		panel_clase.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
-		JCheckBox chckbxSelecionarTodos = new JCheckBox("Selecionar todos");
-		chckbxSelecionarTodos.setHorizontalAlignment(SwingConstants.LEFT);
-		panel_clase.add(chckbxSelecionarTodos);
-
-		JLabel lblClase = new JLabel(clases.get(2));
-		lblClase.setHorizontalAlignment(SwingConstants.CENTER);
-		panel_clase.add(lblClase);
-
-		return panel_clase;
-	}
-
 	/**
 	 * Crea el Jlable y spinner lateral para poder seleccionar la cantidad de
 	 * registros por pagina
 	 * 
 	 * @return
 	 */
-	private JPanel crearBotonesPaginadorWest() {
+	private JPanel crearBotonesPaginadorWest(PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
 
 		JPanel panelPaginadorWest = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -175,15 +134,16 @@ public class Principal {
 		JSpinner paginadorSpinner = new JSpinner(paginadorValoresSpinner);
 		paginadorSpinner.setBounds(100, 100, 50, 30);
 
-		componentes.put("paginadorSpinner", paginadorSpinner);
-		paginadorSpinner.addChangeListener(controlador);
+		componentesPrincipal.put("paginadorSpinner", paginadorSpinner);
+		paginadorSpinner.addChangeListener(controladorPrincipal);
 		panelPaginadorWest.add(paginas);
 		panelPaginadorWest.add(paginadorSpinner);
 
 		return panelPaginadorWest;
 	}
 
-	private JPanel crearBotonesPaginadorCentro() {
+	private JPanel crearBotonesPaginadorCentro(PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
 
 		JPanel panelPaginador = new JPanel();
 		SpinnerModel paginadorValoresSpinner = new SpinnerNumberModel(35, 35, 3500, 5);
@@ -200,14 +160,14 @@ public class Principal {
 		JButton btnPaginadorPrimero = new JButton("<<");
 		JButton btnPaginadorAnterior = new JButton("<");
 
-		// HASMAP DE COMPONENTES DEL PAGINADOR
-		componentes.put("btnPaginadorSiguente", btnPaginadorSiguente);
-		componentes.put("btnPaginadorUltimo", btnPaginadorUltimo);
-		componentes.put("btnPaginadorPrimero", btnPaginadorPrimero);
-		componentes.put("btnPaginadorAnterior", btnPaginadorAnterior);
-		componentes.put("panelPaginador", panelPaginador);
-		componentes.put("paginaSpinner", paginaSpinner);
-		componentes.put("paginadorSpinner", paginadorSpinner);
+		// HASMAP DE componentesPrincipal DEL PAGINADOR
+		componentesPrincipal.put("btnPaginadorSiguente", btnPaginadorSiguente);
+		componentesPrincipal.put("btnPaginadorUltimo", btnPaginadorUltimo);
+		componentesPrincipal.put("btnPaginadorPrimero", btnPaginadorPrimero);
+		componentesPrincipal.put("btnPaginadorAnterior", btnPaginadorAnterior);
+		componentesPrincipal.put("panelPaginador", panelPaginador);
+		componentesPrincipal.put("paginaSpinner", paginaSpinner);
+		componentesPrincipal.put("paginadorSpinner", paginadorSpinner);
 
 		// panelPaginador.add(paginadorSpinner);
 		panelPaginador.add(btnPaginadorPrimero);
@@ -216,56 +176,18 @@ public class Principal {
 		panelPaginador.add(btnPaginadorSiguente);
 		panelPaginador.add(btnPaginadorUltimo);
 
-		btnPaginadorSiguente.addActionListener(controlador);
-		btnPaginadorUltimo.addActionListener(controlador);
-		btnPaginadorPrimero.addActionListener(controlador);
-		btnPaginadorAnterior.addActionListener(controlador);
+		btnPaginadorSiguente.addActionListener(controladorPrincipal);
+		btnPaginadorUltimo.addActionListener(controladorPrincipal);
+		btnPaginadorPrimero.addActionListener(controladorPrincipal);
+		btnPaginadorAnterior.addActionListener(controladorPrincipal);
 
 		return panelPaginador;
 	}
 
-	private JPanel crearListarDatos(ArrayList<String> data, int paginas) {
-		ArrayList<JCheckBox> check = new ArrayList<JCheckBox>();
-		ArrayList<JLabel> label = new ArrayList<JLabel>();
-		int contadorlabel = 0;
-		// Creo panel
-		JPanel listado = new JPanel();
-		// le asigno un layaout
-		listado.setLayout(new GridLayout(paginas, data.size(), 0, 0));
+	public static void logout(PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
 
-		for (int i = 0; i < paginas; i++) {
-			check.add(new JCheckBox(" Seleccionar"));
-			listado.add((JCheckBox) check.get(i));
-
-			for (int j = 0; j < data.size() - 1; j++) {
-				label.add(new JLabel(data.get(j + 1).toString()));
-				listado.add((JLabel) label.get(contadorlabel));
-				contadorlabel++;
-				// listado.add(new JLabel(data.get(j+1).toString()));
-
-			}
-
-		}
-		return listado;
 	}
-
-	public static void logout(JFrame fr) {
-		fr.dispose();
-	}
-
-	private JPanel crearListadoValores(ArrayList<String> data) {
-
-		JPanel listadoTop = new JPanel();
-		listadoTop.setLayout(new GridLayout(1, data.size(), 0, 0));
-
-		for (int i = 0; i < data.size(); i++) {
-			String valor = data.get(i);
-			listadoTop.add(new JLabel(valor));
-		}
-
-		return listadoTop;
-	}
-
 
 	/**
 	 * FINALIZADO NO TOCAR
@@ -274,7 +196,8 @@ public class Principal {
 	 * 
 	 * @return
 	 */
-	private JPanel crearAcciones() {
+	private JPanel crearAcciones(PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
 
 		JPanel panel_acciones = new JPanel();
 
@@ -284,21 +207,21 @@ public class Principal {
 		JButton accionesEditarDato = new JButton("Editar");
 		JButton accionesBorrarDato = new JButton("Borrar");
 
-		componentes.put("accionesCrearDato", accionesCrearDato);
-		componentes.put("accionesEditarDato", accionesEditarDato);
-		componentes.put("accionesBorrarDato", accionesBorrarDato);
+		componentesPrincipal.put("accionesCrearDato", accionesCrearDato);
+		componentesPrincipal.put("accionesEditarDato", accionesEditarDato);
+		componentesPrincipal.put("accionesBorrarDato", accionesBorrarDato);
 
-		panel_acciones.add(componentes.get("accionesCrearDato"));
-		panel_acciones.add(componentes.get("accionesEditarDato"));
-		panel_acciones.add(componentes.get("accionesBorrarDato"));
+		panel_acciones.add(componentesPrincipal.get("accionesCrearDato"));
+		panel_acciones.add(componentesPrincipal.get("accionesEditarDato"));
+		panel_acciones.add(componentesPrincipal.get("accionesBorrarDato"));
 
 		accionesBorrarDato.setBackground(new Color(255, 51, 0));
 		accionesEditarDato.setBackground(new Color(255, 255, 51));
 		accionesCrearDato.setBackground(new Color(153, 255, 102));
 
-		accionesBorrarDato.addActionListener(controlador);
-		accionesEditarDato.addActionListener(controlador);
-		accionesCrearDato.addActionListener(controlador);
+		accionesBorrarDato.addActionListener(controladorPrincipal);
+		accionesEditarDato.addActionListener(controladorPrincipal);
+		accionesCrearDato.addActionListener(controladorPrincipal);
 
 		accionesBorrarDato.setActionCommand("borrar");
 		accionesEditarDato.setActionCommand("editar");
@@ -309,98 +232,9 @@ public class Principal {
 		return panel_acciones;
 	}
 
-	public static void vaciarFiltros(HashMap<String, Component> componentes) {
-		switch (getClaseActual()) {
-		case "taller":
-			Taller.vaciarFiltrosTaller(componentes);
-			break;
-		case "cliente":
-			break;
-		case "cita":
-
-			break;
-		case "vehiculo":
-
-			break;
-		case "vehiculo_tipo":
-
-			break;
-		case "usuario":
-
-			break;
-
-		default:
-			break;
-		}
-	}
 	
-	public static void leerFiltros(HashMap<String, Component> componentes) {
-		switch (getClaseActual()) {
-		case "taller":
-			Taller.leerFiltrosTaller(componentes);
-			break;
-		case "cliente":
-			break;
-		case "cita":
 
-			break;
-		case "vehiculo":
-
-			break;
-		case "vehiculo_tipo":
-
-			break;
-		case "usuario":
-
-			break;
-
-		default:
-			break;
-		}
-	}
-
-	private JPanel crearFiltros() {
-
-		JPanel panel_filtros = null;
-
-		// panel_filtros.setLayout(new GridLayout(1, data.size(), 0, 0));
-
-		switch (getClaseActual()) {
-		case "taller":
-			panel_filtros = Taller.crearFiltrosTaller(componentes);
-			break;
-		case "cliente":
-			break;
-		case "cita":
-
-			break;
-		case "vehiculo":
-
-			break;
-		case "vehiculo_tipo":
-
-			break;
-		case "usuario":
-
-			break;
-
-		default:
-			break;
-		}
-
-		JButton btnFiltrosBuscar = new JButton("Buscar");
-		componentes.put("btnFiltrosBuscar", btnFiltrosBuscar);
-		btnFiltrosBuscar.setActionCommand("filtrosBuscar");
-		btnFiltrosBuscar.addActionListener(controlador);
-		panel_filtros.add(btnFiltrosBuscar);
-		JButton btnFiltrosBorrar = new JButton("Borrar");
-		componentes.put("btnFiltrosBorrar", btnFiltrosBorrar);
-		btnFiltrosBorrar.setActionCommand("borrarFiltros");
-		btnFiltrosBorrar.addActionListener(controlador);
-		panel_filtros.add(btnFiltrosBorrar);
-
-		return panel_filtros;
-	}
+	
 
 	private Frame exportador() {
 		frame = new JFrame();
@@ -414,7 +248,8 @@ public class Principal {
 
 	// TODO HACER QUE CUANDO PULSE LOGOUT SE CIERRE LA VENTANA Y SE CREE UN NUEVO
 	// LOGIN
-	private JMenuBar crearBar() {
+	private JMenuBar crearBar(PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
 		JMenuBar menuBar = new JMenuBar();
 
 		// Consigue los nombres de las tablas de la base de datos
@@ -469,15 +304,15 @@ public class Principal {
 
 		menuBar.add(logout);
 
-		// logout.addActionListener(controlador);
-		importar.addActionListener(controlador);
-		exportar.addActionListener(controlador);
-		citas.addActionListener(controlador);
-		talleres.addActionListener(controlador);
-		vehiculos.addActionListener(controlador);
-		clientes.addActionListener(controlador);
-		usuarios.addActionListener(controlador);
-		vehiculos_tipos.addActionListener(controlador);
+		// logout.addActionListener(controladorPrincipal);
+		importar.addActionListener(controladorPrincipal);
+		exportar.addActionListener(controladorPrincipal);
+		citas.addActionListener(controladorPrincipal);
+		talleres.addActionListener(controladorPrincipal);
+		vehiculos.addActionListener(controladorPrincipal);
+		clientes.addActionListener(controladorPrincipal);
+		usuarios.addActionListener(controladorPrincipal);
+		vehiculos_tipos.addActionListener(controladorPrincipal);
 
 		// logout.setActionCommand("Logout");
 		importar.setActionCommand("importar");
@@ -500,42 +335,39 @@ public class Principal {
 
 		HashMap<String, Component> componentesPrincipal = new HashMap<String, Component>();
 
-		ArrayList<String> clases = new ArrayList<>();
-		clases.add("Citas");
-		clases.add("Talleres");
-		clases.add("Vehiculos");
-		clases.add("Clientes");
-		clases.add("Usuarios");
-		clases.add("Tipos de Vehiculos");
-
-		// DEFINIMOS COMPONENTES NECESARIOS
+		// DEFINIMOS componentesPrincipal NECESARIOS
 		Frame framePrincipal = new JFrame();
 		framePrincipal.setBounds(100, 100, 1000, 700);
 		((JFrame) framePrincipal).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		((JFrame) framePrincipal).getContentPane().setLayout(new BorderLayout(0, 0));
 		framePrincipal.setVisible(true);
 
-		// frame.setMinimumSize(new Dimension(1600,700));
-
 		JPanel panel = new JPanel();
-		JPanel panelPaginador = new JPanel();
-		JPanel acciones = crearAcciones();
-		JPanel panel_filtros = crearFiltros();
-		// JPanel listadoTop = crearListadoValores(Taller.getTalleresMetaArr());
-		JPanel listador = crearListarDatos(Taller.getTalleresMetaArr(), 20);
-
 		JPanel panel_1 = new JPanel();
 		JPanel panel_2 = new JPanel();
-		JPanel panel_3 = new JPanel();
+
+		JPanel panel_listar = new JPanel();
+		JPanel panelPaginador = new JPanel();
+		JPanel acciones = new JPanel();
+		JPanel panel_filtros = new JPanel();
+
+		componentesPrincipal.put("framePrincipal", framePrincipal);
+		componentesPrincipal.put("panel_listar", panel_listar);
+
+		// controladorPrincipal DE LA CLASE
+		PrincipalController controladorPrincipal = new PrincipalController(componentesPrincipal);
+
+		acciones = crearAcciones(controladorPrincipal, componentesPrincipal);
+		panel_filtros =database.funciones.crearFiltros(controladorPrincipal, componentesPrincipal);
 
 		// ESTABLECEMOS LAYAOUT
 		panel.setLayout(new BorderLayout(0, 0));
 		panel_1.setLayout(new BorderLayout(0, 0));
 		panel_2.setLayout(new BorderLayout(0, 0));
-		panel_3.setLayout(new BorderLayout(0, 0));
+		panel_listar.setLayout(new BorderLayout(0, 0));
 
-		// AÑADIMOS COMPONENTES AL PANEL
-		((JFrame) framePrincipal).setJMenuBar(crearBar());
+		// AÑADIMOS componentesPrincipal AL PANEL
+		((JFrame) framePrincipal).setJMenuBar(crearBar(controladorPrincipal, componentesPrincipal));
 		((JFrame) framePrincipal).getContentPane().add(panel);
 
 		panel.add(acciones, BorderLayout.NORTH);
@@ -547,27 +379,25 @@ public class Principal {
 		panel_1.add(panelPaginador, BorderLayout.SOUTH);
 
 		panelPaginador.setLayout(new GridLayout(0, 3, 0, 0));
-		panelPaginador.add(crearBotonesPaginadorWest());
+		panelPaginador.add(crearBotonesPaginadorWest(controladorPrincipal, componentesPrincipal));
 
 		JPanel panelVacioPaginador = new JPanel();
-		panelPaginador.add(crearBotonesPaginadorCentro());
+		panelPaginador.add(crearBotonesPaginadorCentro(controladorPrincipal, componentesPrincipal));
 		panelPaginador.add(panelVacioPaginador);
 
-		panel_2.add(panel_3, BorderLayout.CENTER);
+		panel_2.add(panel_listar, BorderLayout.CENTER);
 		panel_2.add(panel_filtros, BorderLayout.NORTH);
 
-		// panel_3.add(listadoTop, BorderLayout.NORTH);
-		// panel_3.add(Principal.crearJTable(Taller.getTalleres(pagina, columnasPagina),
+		// panel_listar.add(listadoTop, BorderLayout.NORTH);
+		// panel_listar.add(Principal.crearJTable(Taller.getTalleres(pagina,
+		// columnasPagina),
 		// Taller.getTalleresMeta()), BorderLayout.CENTER);
-		// panel_3.add(Principal.crearJTable(Cita.getCitas(),
+		// panel_listar.add(Principal.crearJTable(Cita.getCitas(),
 		// Usuario.getUsuarioColumnNames()), BorderLayout.CENTER);
 
 		// panel_4.add(CrearJTable(), BorderLayout.CENTER);
 
-		componentesPrincipal.put("framePrincipal", framePrincipal);
-		componentesPrincipal.put("panel_3", panel_3);
-
-		listarDatos(componentesPrincipal);
+		listarDatos(controladorPrincipal, componentesPrincipal);
 	}
 
 	public static int getPagina() {
@@ -592,5 +422,13 @@ public class Principal {
 
 	public static void setClaseActual(String claseActual) {
 		Principal.claseActual = claseActual;
+	}
+
+	public static int getTotalRegistros() {
+		return totalRegistros;
+	}
+
+	public static void setTotalRegistros(int totalRegistros) {
+		Principal.totalRegistros = totalRegistros;
 	}
 }
