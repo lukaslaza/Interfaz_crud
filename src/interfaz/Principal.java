@@ -11,7 +11,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
+import clases.Cita;
+import clases.Cliente;
 import clases.Taller;
+import clases.Usuario;
 import clases.dbConexion;
 import controller.PrincipalController;
 
@@ -42,8 +45,10 @@ import java.awt.Dimension;
 
 import javax.swing.JSeparator;
 import javax.swing.JList;
+import javax.print.attribute.standard.Sides;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JComboBox;
@@ -51,6 +56,7 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.TextArea;
 import java.awt.Window;
 
 import javax.swing.SwingConstants;
@@ -61,6 +67,8 @@ public class Principal {
 	HashMap<String, Component> componentes = new HashMap<String, Component>();
 	public PrincipalController controlador = new PrincipalController(componentes);
 	private JFrame frame;
+
+	private static String claseActual = "taller";
 	private static int pagina = 0;
 	private static int columnasPagina = 20;
 	// private JTextField txtPaginaActual;
@@ -70,7 +78,7 @@ public class Principal {
 			public void run() {
 				try {
 					Principal window = new Principal();
-					//window.frame.setVisible(true);
+					// window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -84,15 +92,51 @@ public class Principal {
 	public Principal() {
 		initialize();
 	}
-	
-	private void listarDatos() {
-		
+
+	public static void listarDatos(HashMap<String, Component> componentes) {
+		switch (getClaseActual()) {
+		case "taller":
+			TablaListar tablaTaller = Principal.crearJTable(Taller.getTalleres(pagina, columnasPagina),
+					Taller.getTalleresMeta());
+			((JPanel) componentes.get("panel_3")).add(tablaTaller, BorderLayout.CENTER);
+			// panel_3.add(Principal.crearJTable(Usuario.getUsuarios(),
+			// Usuario.getUsuarioColumnNames()), BorderLayout.CENTER);
+			break;
+		case "cliente":
+			TablaListar tablaCliente = Principal.crearJTable(Cliente.getClientes(pagina, columnasPagina),
+					Cliente.getClientesMeta());
+			tablaCliente.validate();
+			((JPanel) componentes.get("panel_3")).invalidate();
+			((JPanel) componentes.get("panel_3")).add(tablaCliente, BorderLayout.CENTER);
+			((JPanel) componentes.get("panel_3")).revalidate();
+			((JPanel) componentes.get("panel_3")).repaint();
+		case "cita":
+
+			break;
+		case "vehiculo":
+
+			break;
+		case "vehiculo_tipo":
+
+			break;
+		case "usuario":
+
+			break;
+
+		default:
+			break;
+		}
 	}
 
-	private TablaListar crearJTable() {
-		TablaListar table = new TablaListar(Taller.getTalleres(pagina, columnasPagina), Taller.getTalleresMeta());
-		//final JTable table = new JTable(Taller.getTalleres(pagina, columnasPagina), Taller.getTalleresMeta());
-
+	/**
+	 * Crea la tabla con nuestra clase TablaListar
+	 * 
+	 * @param data        datos a mostrar
+	 * @param columnNames cabeceras de las columnas
+	 * @return la tabla para poder utilizarla
+	 */
+	public static TablaListar crearJTable(Object[][] data, String[] columnNames) {
+		TablaListar table = new TablaListar(data, columnNames);
 		return table;
 	}
 
@@ -112,10 +156,36 @@ public class Principal {
 		return panel_clase;
 	}
 
-	private JPanel crearBotonesPaginador() {
+	/**
+	 * Crea el Jlable y spinner lateral para poder seleccionar la cantidad de
+	 * registros por pagina
+	 * 
+	 * @return
+	 */
+	private JPanel crearBotonesPaginadorWest() {
+
+		JPanel panelPaginadorWest = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+		JLabel paginas = new JLabel();
+		paginas.setHorizontalAlignment(SwingConstants.LEFT);
+		paginas.setText("Registros:");
+
+		SpinnerModel paginadorValoresSpinner = new SpinnerNumberModel(35, 35, 3500, 5);
+
+		JSpinner paginadorSpinner = new JSpinner(paginadorValoresSpinner);
+		paginadorSpinner.setBounds(100, 100, 50, 30);
+
+		componentes.put("paginadorSpinner", paginadorSpinner);
+		paginadorSpinner.addChangeListener(controlador);
+		panelPaginadorWest.add(paginas);
+		panelPaginadorWest.add(paginadorSpinner);
+
+		return panelPaginadorWest;
+	}
+
+	private JPanel crearBotonesPaginadorCentro() {
 
 		JPanel panelPaginador = new JPanel();
-
 		SpinnerModel paginadorValoresSpinner = new SpinnerNumberModel(35, 35, 3500, 5);
 		SpinnerModel paginaValoresSpinner = new SpinnerNumberModel(1, 1, 300, 1);
 
@@ -139,7 +209,7 @@ public class Principal {
 		componentes.put("paginaSpinner", paginaSpinner);
 		componentes.put("paginadorSpinner", paginadorSpinner);
 
-		panelPaginador.add(paginadorSpinner);
+		// panelPaginador.add(paginadorSpinner);
 		panelPaginador.add(btnPaginadorPrimero);
 		panelPaginador.add(btnPaginadorAnterior);
 		panelPaginador.add(paginaSpinner);
@@ -178,7 +248,7 @@ public class Principal {
 		}
 		return listado;
 	}
-	
+
 	public static void logout(JFrame fr) {
 		fr.dispose();
 	}
@@ -238,15 +308,58 @@ public class Principal {
 		return panel_acciones;
 	}
 
-	private JPanel crearFiltros(ArrayList<String> data) {
+	public static void vaciarFiltros(HashMap<String, Component> componentes) {
+		switch (getClaseActual()) {
+		case "taller":
+			Taller.vaciarFiltrosTaller(componentes);
+			break;
+		case "cliente":
+			break;
+		case "cita":
 
-		JPanel panel_filtros = new JPanel();
+			break;
+		case "vehiculo":
 
-		panel_filtros.setLayout(new GridLayout(1, data.size(), 0, 0));
+			break;
+		case "vehiculo_tipo":
 
-		for (int i = 0; i < data.size(); i++) {
-			panel_filtros.add(new JLabel(data.get(i).toUpperCase() + "--> "));
-			panel_filtros.add(new JTextField());
+			break;
+		case "usuario":
+
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	private JPanel crearFiltros() {
+
+		JPanel panel_filtros = null;
+
+		// panel_filtros.setLayout(new GridLayout(1, data.size(), 0, 0));
+
+		switch (getClaseActual()) {
+		case "taller":
+			panel_filtros = Taller.crearFiltrosTaller(componentes);
+			break;
+		case "cliente":
+			break;
+		case "cita":
+
+			break;
+		case "vehiculo":
+
+			break;
+		case "vehiculo_tipo":
+
+			break;
+		case "usuario":
+
+			break;
+
+		default:
+			break;
 		}
 
 		JButton btnFiltrosBuscar = new JButton("Buscar");
@@ -273,8 +386,8 @@ public class Principal {
 
 	}
 
-	
-	//TODO HACER QUE CUANDO PULSE LOGOUT SE CIERRE LA VENTANA Y SE CREE UN NUEVO LOGIN
+	// TODO HACER QUE CUANDO PULSE LOGOUT SE CIERRE LA VENTANA Y SE CREE UN NUEVO
+	// LOGIN
 	private JMenuBar crearBar() {
 		JMenuBar menuBar = new JMenuBar();
 
@@ -310,7 +423,7 @@ public class Principal {
 		JSeparator separator = new JSeparator();
 
 		JButton logout = new JButton("Logout".toUpperCase());
-		
+
 		// Añadir Botones
 		menuBar.add(citas);
 		menuBar.add(talleres);
@@ -330,7 +443,7 @@ public class Principal {
 
 		menuBar.add(logout);
 
-		//logout.addActionListener(controlador);
+		// logout.addActionListener(controlador);
 		importar.addActionListener(controlador);
 		exportar.addActionListener(controlador);
 		citas.addActionListener(controlador);
@@ -340,7 +453,7 @@ public class Principal {
 		usuarios.addActionListener(controlador);
 		vehiculos_tipos.addActionListener(controlador);
 
-		//logout.setActionCommand("Logout");
+		// logout.setActionCommand("Logout");
 		importar.setActionCommand("importar");
 		exportar.setActionCommand("exportar");
 		citas.setActionCommand("citas");
@@ -375,12 +488,13 @@ public class Principal {
 		((JFrame) framePrincipal).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		((JFrame) framePrincipal).getContentPane().setLayout(new BorderLayout(0, 0));
 		framePrincipal.setVisible(true);
-		componentesPrincipal.put("framePrincipal", framePrincipal);
+
 		// frame.setMinimumSize(new Dimension(1600,700));
 
 		JPanel panel = new JPanel();
+		JPanel panelPaginador = new JPanel();
 		JPanel acciones = crearAcciones();
-		JPanel panel_filtros = crearFiltros(Taller.getTalleresMetaArr());
+		JPanel panel_filtros = crearFiltros();
 		// JPanel listadoTop = crearListadoValores(Taller.getTalleresMetaArr());
 		JPanel listador = crearListarDatos(Taller.getTalleresMetaArr(), 20);
 
@@ -403,16 +517,31 @@ public class Principal {
 
 		panel_1.add(panel_2, BorderLayout.CENTER);
 		// panel_1.add(crearNombreClaseSuperior(clases), BorderLayout.NORTH);
-		panel_1.add(crearBotonesPaginador(), BorderLayout.SOUTH);
+
+		panel_1.add(panelPaginador, BorderLayout.SOUTH);
+
+		panelPaginador.setLayout(new GridLayout(0, 3, 0, 0));
+		panelPaginador.add(crearBotonesPaginadorWest());
+
+		JPanel panelVacioPaginador = new JPanel();
+		panelPaginador.add(crearBotonesPaginadorCentro());
+		panelPaginador.add(panelVacioPaginador);
 
 		panel_2.add(panel_3, BorderLayout.CENTER);
 		panel_2.add(panel_filtros, BorderLayout.NORTH);
 
 		// panel_3.add(listadoTop, BorderLayout.NORTH);
-		panel_3.add(crearJTable(), BorderLayout.CENTER);
+		// panel_3.add(Principal.crearJTable(Taller.getTalleres(pagina, columnasPagina),
+		// Taller.getTalleresMeta()), BorderLayout.CENTER);
+		// panel_3.add(Principal.crearJTable(Cita.getCitas(),
+		// Usuario.getUsuarioColumnNames()), BorderLayout.CENTER);
 
 		// panel_4.add(CrearJTable(), BorderLayout.CENTER);
 
+		componentesPrincipal.put("framePrincipal", framePrincipal);
+		componentesPrincipal.put("panel_3", panel_3);
+
+		listarDatos(componentesPrincipal);
 	}
 
 	public static int getPagina() {
@@ -429,5 +558,13 @@ public class Principal {
 
 	public static void setColumnasPagina(int columnasPagina) {
 		Principal.columnasPagina = columnasPagina;
+	}
+
+	public static String getClaseActual() {
+		return claseActual;
+	}
+
+	public static void setClaseActual(String claseActual) {
+		Principal.claseActual = claseActual;
 	}
 }

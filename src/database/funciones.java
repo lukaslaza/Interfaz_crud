@@ -17,9 +17,14 @@ public class funciones {
 	public static int paginaActual(int currentPage, int pageSize) {
 		return Math.max((pageSize * (currentPage - 1)) + 1, 1);
 	}
+	
+	public static int paginasMaximas(int registrosTotales, int registrosPorPagina) {
+		return (int) Math.ceil(registrosTotales/registrosPorPagina);
+	}
+	
 
 	public static void main(String[] args) {
-		System.out.println(paginaActual(10, 5));
+		System.out.println(paginasMaximas(1000, 10));
 	}
 
 }

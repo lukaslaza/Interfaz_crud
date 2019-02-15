@@ -1,5 +1,7 @@
 package clases;
 
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.print.Book;
 import java.beans.Statement;
 import java.sql.Connection;
@@ -7,17 +9,24 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.xml.crypto.Data;
 
 import org.mariadb.jdbc.MariaDbStatement;
 
 public class Taller {
-	// Variables.
+
+	// Valores de la clase
 	private String nombre, direccion, telefono;
 	private float latitud, longitud;
 
+	// Constructores
 	public Taller(String nombre, String direccion, String telefono, float latitud, float longitud) {
 
 		setDireccion(direccion);
@@ -27,6 +36,7 @@ public class Taller {
 		setLongitud(longitud);
 	}
 
+	// Metadatos
 	/**
 	 * Funcion que nos devulve los metadatos de la tabla talleres es decir las
 	 * cabeceras de la tabla
@@ -58,14 +68,13 @@ public class Taller {
 			System.out.println(e.getMessage());
 		}
 		String[] cabeceras = new String[metadatos.size()];
-		
-		for (int i = 0; i < metadatos.size();i++) {
+
+		for (int i = 0; i < metadatos.size(); i++) {
 			cabeceras[i] = metadatos.get(i);
 		}
 		return cabeceras;
 	}
 
-	
 	/**
 	 * Nos devuelve los metadatos de la tabla taller pero en formato arrayList
 	 * 
@@ -98,6 +107,7 @@ public class Taller {
 
 	}
 
+	// Datos
 	/**
 	 * Funcion que nos devuelve todos los talleres en formato arrayList
 	 * 
@@ -139,7 +149,7 @@ public class Taller {
 	 * @return
 	 */
 	public static ArrayList<Taller> getTalleresArr(int resultados, int pagina) {
-		String query = "Select * from taller LIMIT" + pagina + " , " + pagina+resultados;
+		String query = "Select * from taller LIMIT" + pagina + " , " + pagina + resultados;
 		Connection conn = (Connection) dbConexion.getConnection();
 		ArrayList<Taller> talleres = new ArrayList<>();
 		int colcount = 0;
@@ -166,7 +176,7 @@ public class Taller {
 			System.out.println(e.getMessage());
 		}
 
-		//Object[][] multi = new Object[pagina - ini][colcount];
+		// Object[][] multi = new Object[pagina - ini][colcount];
 
 		/*
 		 * for (int i = 0; i < fin-ini; i++) { for (int j = 0; j < colcount; j++) {
@@ -217,47 +227,73 @@ public class Taller {
 
 	}
 
-	public String getNombre() {
-		return nombre;
+	// Filtros
+	public static JPanel crearFiltrosTaller(HashMap<String, Component> componentes) {
+
+		JPanel panel_filtros = new JPanel();
+
+		panel_filtros.setLayout(new GridLayout(1, Taller.getTalleresMetaArr().size(), 0, 0));
+
+		for (int i = 0; i < Taller.getTalleresMetaArr().size(); i++) {
+			componentes.put("lblFiltroTaller_" + Taller.getTalleresMetaArr().get(i),
+					new JLabel(Taller.getTalleresMetaArr().get(i)));
+			componentes.put("txtFiltrosTaller_" + Taller.getTalleresMetaArr().get(i), new JTextField());
+
+			// Añadimos los valores al panel
+			panel_filtros.add(componentes.get("lblFiltroTaller_" + Taller.getTalleresMetaArr().get(i)));
+			panel_filtros.add(componentes.get("txtFiltrosTaller_" + Taller.getTalleresMetaArr().get(i)));
+		}
+		return panel_filtros;
+
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public static void vaciarFiltrosTaller(HashMap<String, Component> componentes) {
+		for (int i = 0; i < Taller.getTalleresMetaArr().size(); i++) {
+			((JTextField) componentes.get("txtFiltrosTaller_" + Taller.getTalleresMetaArr().get(i))).setText("");
+		}
+
+	}
+
+	// GET
+	public String getNombre() {
+		return nombre;
 	}
 
 	public String getDireccion() {
 		return direccion;
 	}
 
-	public void setDireccion(String direccion) {
-		this.direccion = direccion;
-	}
-
 	public String getTelefono() {
 		return telefono;
-	}
-
-	public void setTelefono(String telefono) {
-		this.telefono = telefono;
 	}
 
 	public float getLatitud() {
 		return latitud;
 	}
 
-	public void setLatitud(float latitud) {
-		this.latitud = latitud;
-	}
-
 	public float getLongitud() {
 		return longitud;
+	}
+
+	// SET
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public void setLatitud(float latitud) {
+		this.latitud = latitud;
 	}
 
 	public void setLongitud(float longitud) {
 		this.longitud = longitud;
 	}
 
-	public static void main(String[] args) {
-
-	}
 }

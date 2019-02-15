@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -9,25 +10,26 @@ import java.awt.event.KeyListener;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import clases.Cliente;
+import clases.Taller;
 import interfaz.Exportador;
 import interfaz.Importador;
 import interfaz.Login;
 import interfaz.Principal;
 
 public class PrincipalController implements ActionListener, KeyListener, ChangeListener {
-	
-	HashMap<String, Component> componentesImportador=new HashMap<String, Component>();
-	
+
+	HashMap<String, Component> componentesPrincipal = new HashMap<String, Component>();
+
 	// Constructor
 	public PrincipalController(HashMap<String, Component> componentes) {
-		this.componentesImportador = componentes;
+		this.componentesPrincipal = componentes;
 	}
-	
-	
-	
+
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
@@ -45,9 +47,6 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		// TODO Auto-generated method stub
 
 	}
-
-	
-
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -73,43 +72,49 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		}
 
 		if (accion.equalsIgnoreCase("citas")) {
-			// Cita.listar(0,20);
-			System.out.println("citas");
+			Principal.setClaseActual("cita");
+			Principal.listarDatos(componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("clientes")) {
-			// Cliente.listar(0,20);
-			System.out.println("clientes");
+			Principal.setClaseActual("cliente");
+			Principal.listarDatos(componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos")) {
-			// Vehiculo.listar(0,20);
-			System.out.println("vehiculos");
+			Principal.setClaseActual("vehiculo");
+			Principal.listarDatos(componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("talleres")) {
-			// Taller.listar(0,20);
-			System.out.println("talleres");
+			Principal.setClaseActual("taller");
+			Principal.listarDatos(componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos_tipos")) {
-			// VehiculoTipo.listar(0,20);
-			System.out.println("vehiculos_tipos");
+			Principal.setClaseActual("vehiculo_tipo");
+			Principal.listarDatos(componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("usuarios")) {
-			// Usuario.listar(0,20);
-			System.out.println("usuarios");
+			Principal.setClaseActual("usuario");
+			Principal.listarDatos(componentesPrincipal);
+		}
+		
+		if (accion.equalsIgnoreCase("filtrosBuscar")) {
+			
+		}
+		
+		if (accion.equalsIgnoreCase("borrarFiltros")) {
+			Principal.vaciarFiltros(componentesPrincipal);
 		}
 
 	}
 
 	public void logout() {
-		Principal.logout((JFrame) componentesImportador.get("frame"));
+		Principal.logout((JFrame) componentesPrincipal.get("frame"));
 		new Login();
 	}
-
-
 
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
