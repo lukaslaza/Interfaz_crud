@@ -266,6 +266,7 @@ public class Principal {
 		return listadoTop;
 	}
 
+
 	/**
 	 * FINALIZADO NO TOCAR
 	 * 
@@ -312,6 +313,31 @@ public class Principal {
 		switch (getClaseActual()) {
 		case "taller":
 			Taller.vaciarFiltrosTaller(componentes);
+			break;
+		case "cliente":
+			break;
+		case "cita":
+
+			break;
+		case "vehiculo":
+
+			break;
+		case "vehiculo_tipo":
+
+			break;
+		case "usuario":
+
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	public static void leerFiltros(HashMap<String, Component> componentes) {
+		switch (getClaseActual()) {
+		case "taller":
+			Taller.leerFiltrosTaller(componentes);
 			break;
 		case "cliente":
 			break;

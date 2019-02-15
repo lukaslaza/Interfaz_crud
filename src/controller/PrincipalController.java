@@ -97,11 +97,12 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		}
 		
 		if (accion.equalsIgnoreCase("filtrosBuscar")) {
-			
+			Principal.leerFiltros(componentesPrincipal);
 		}
 		
 		if (accion.equalsIgnoreCase("borrarFiltros")) {
 			Principal.vaciarFiltros(componentesPrincipal);
+			System.out.println("borrar");
 		}
 
 	}

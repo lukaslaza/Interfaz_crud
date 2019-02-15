@@ -253,6 +253,19 @@ public class Taller {
 		}
 
 	}
+	public static void leerFiltrosTaller(HashMap<String, Component> componentes) {
+		String sentencia=" where true ";
+		
+		for (int i = 0; i < Taller.getTalleresMetaArr().size(); i++) {
+			if (((JTextField) componentes.get("txtFiltrosTaller_" + Taller.getTalleresMetaArr().get(i))).getText()==null || ((JTextField) componentes.get("txtFiltrosTaller_" + Taller.getTalleresMetaArr().get(i))).getText()=="") {
+				sentencia=sentencia+"and "+Taller.getTalleresMetaArr().get(i).toLowerCase()+" like "+"'"
+			+((JTextField) componentes.get("txtFiltrosTaller_" + Taller.getTalleresMetaArr().get(i))).getText()+"' ";
+			}
+			
+		}
+		System.out.println(sentencia);
+
+	}
 
 	// GET
 	public String getNombre() {
