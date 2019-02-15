@@ -52,6 +52,7 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 	public void actionPerformed(ActionEvent arg0) {
 		String accion = arg0.getActionCommand();
 
+		//ACCIONES
 		if (accion.equalsIgnoreCase("crear")) {
 			System.out.println("crear");
 		}
@@ -61,13 +62,18 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		if (accion.equalsIgnoreCase("editar")) {
 			System.out.println("editar");
 		}
+		
+		
+		//BAR
 		if (accion.equalsIgnoreCase("logout")) {
 			logout();
 		}
 		if (accion.equalsIgnoreCase("importar")) {
+			//TODO HACER QUE LA CLASE SOLO SE PUEDA INSTANCIAR UNA VEZ
 			Importador importador = new Importador();
 		}
 		if (accion.equalsIgnoreCase("exportar")) {
+			//TODO HACER QUE LA CLASE SOLO SE PUEDA INSTANCIAR UNA VEZ
 			Exportador exportador = new Exportador();
 		}
 
@@ -96,25 +102,27 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 			Principal.listarDatos(componentesPrincipal);
 		}
 		
+		//Filtros		
 		if (accion.equalsIgnoreCase("filtrosBuscar")) {
 			Principal.leerFiltros(componentesPrincipal);
 		}
 		
 		if (accion.equalsIgnoreCase("borrarFiltros")) {
 			Principal.vaciarFiltros(componentesPrincipal);
-			System.out.println("borrar");
 		}
 
 	}
 
+	//TODO VER ERROR AL CERRAR LA VENTANA PRINCIPAL Y PONER UN LOGIN NUEVO
 	public void logout() {
 		Principal.logout((JFrame) componentesPrincipal.get("frame"));
 		new Login();
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent arg0) {
-		// TODO Auto-generated method stub
+	public void stateChanged(ChangeEvent a) {
+		componentesPrincipal.get("paginadorSpinner")
+		 jLabel.setText(a.getSource());
 
 	}
 
