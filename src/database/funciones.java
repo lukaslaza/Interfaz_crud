@@ -552,25 +552,22 @@ public class funciones {
 
 	}
 
-	public static void leerFiltrosTaller(PrincipalController controladorPrincipal,
+	public static void leerFiltros(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
 		String sentencia = " where true ";
 		String clase = "";
 		for (int i = 0; i < getMetadatosTablaArray().size() - 1; i++) {
-
 			clase = ("txtFiltro" + Principal.getClaseActual() + "_" + getMetadatosTablaArray().get(i).toLowerCase());
-			System.out.println(clase);
 			if (((JTextField) componentesPrincipal.get(clase)).getText() == null
 					|| ((JTextField) componentesPrincipal.get(clase)).getText() == ""
-					|| ((JTextField) componentesPrincipal.get(clase)).getText() == "") {
-				System.out.println("NADA");
+					|| ((JTextField) componentesPrincipal.get(clase)).getText() == " "
+					|| ((JTextField) componentesPrincipal.get(clase)).getText().isEmpty()) {
 			} else {
 				sentencia = sentencia + "and " + getMetadatosTablaArray().get(i).toLowerCase() + " like " + "'"
 						+ ((JTextField) componentesPrincipal.get(clase)).getText() + "' ";
 			}
 
 		}
-		System.out.println(sentencia);
 
 	}
 

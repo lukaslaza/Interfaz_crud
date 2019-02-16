@@ -66,7 +66,7 @@ public class Principal {
 
 	private JFrame frame;
 
-	private static String claseActual = "vehiculo";
+	private static String claseActual = "cliente";
 	private static int pagina = 0;
 	private static int columnasPagina = 20;
 	private static int totalRegistros = 1000;
@@ -135,6 +135,7 @@ public class Principal {
 		paginadorSpinner.setBounds(100, 100, 50, 30);
 
 		componentesPrincipal.put("paginadorSpinner", paginadorSpinner);
+
 		paginadorSpinner.addChangeListener(controladorPrincipal);
 		panelPaginadorWest.add(paginas);
 		panelPaginadorWest.add(paginadorSpinner);
@@ -146,11 +147,8 @@ public class Principal {
 			HashMap<String, Component> componentesPrincipal) {
 
 		JPanel panelPaginador = new JPanel();
-		SpinnerModel paginadorValoresSpinner = new SpinnerNumberModel(35, 35, 3500, 5);
 		SpinnerModel paginaValoresSpinner = new SpinnerNumberModel(1, 1, 300, 1);
 
-		JSpinner paginadorSpinner = new JSpinner(paginadorValoresSpinner);
-		paginadorSpinner.setBounds(100, 100, 50, 30);
 
 		JSpinner paginaSpinner = new JSpinner(paginaValoresSpinner);
 		paginaSpinner.setBounds(100, 100, 50, 30);
@@ -167,7 +165,6 @@ public class Principal {
 		componentesPrincipal.put("btnPaginadorAnterior", btnPaginadorAnterior);
 		componentesPrincipal.put("panelPaginador", panelPaginador);
 		componentesPrincipal.put("paginaSpinner", paginaSpinner);
-		componentesPrincipal.put("paginadorSpinner", paginadorSpinner);
 
 		// panelPaginador.add(paginadorSpinner);
 		panelPaginador.add(btnPaginadorPrimero);
@@ -180,7 +177,8 @@ public class Principal {
 		btnPaginadorUltimo.addActionListener(controladorPrincipal);
 		btnPaginadorPrimero.addActionListener(controladorPrincipal);
 		btnPaginadorAnterior.addActionListener(controladorPrincipal);
-
+		paginaSpinner.addChangeListener(controladorPrincipal);
+		
 		return panelPaginador;
 	}
 

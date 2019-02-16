@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -73,33 +74,33 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 
 		if (accion.equalsIgnoreCase("citas")) {
 			Principal.setClaseActual("cita");
-			Principal.listarDatos(this,componentesPrincipal);
+			Principal.listarDatos(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("clientes")) {
 			Principal.setClaseActual("cliente");
-			Principal.listarDatos(this,componentesPrincipal);
+			Principal.listarDatos(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos")) {
 			Principal.setClaseActual("vehiculo");
-			Principal.listarDatos(this,componentesPrincipal);
+			Principal.listarDatos(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("talleres")) {
 			Principal.setClaseActual("taller");
-			Principal.listarDatos(this,componentesPrincipal);
+			Principal.listarDatos(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos_tipos")) {
 			Principal.setClaseActual("vehiculo_tipo");
-			Principal.listarDatos(this,componentesPrincipal);
+			Principal.listarDatos(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("usuarios")) {
 			Principal.setClaseActual("usuario");
-			Principal.listarDatos(this,componentesPrincipal);
+			Principal.listarDatos(this, componentesPrincipal);
 		}
-		
+
 		if (accion.equalsIgnoreCase("filtrosBuscar")) {
-			database.funciones.leerFiltrosTaller(this, componentesPrincipal);
+			database.funciones.leerFiltros(this, componentesPrincipal);
 		}
-		
+
 		if (accion.equalsIgnoreCase("borrarFiltros")) {
 			database.funciones.vaciarFiltros(this, componentesPrincipal);
 			System.out.println("borrar");
@@ -108,13 +109,23 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 	}
 
 	public void logout() {
-		//Principal.logout((JFrame) componentesPrincipal.get("frame"));
+		// Principal.logout((JFrame) componentesPrincipal.get("frame"));
 		new Login();
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent arg0) {
-		// TODO Auto-generated method stub
+	public void stateChanged(ChangeEvent e) {
+		JSpinner s = (JSpinner) e.getSource();
+
+		if (((JSpinner) componentesPrincipal.get("paginaSpinner")).getValue() == s.getValue()) {
+			Principal.setPagina((int) s.getValue());
+		}
+		if (((JSpinner) componentesPrincipal.get("paginadorSpinner")).getValue() == s.getValue()) {
+			Principal.setColumnasPagina((int) s.getValue());
+		}
+
+		//TODO LISTAR DATOS DE LA MANERA CORRESPONDIENTE
+		
 
 	}
 
