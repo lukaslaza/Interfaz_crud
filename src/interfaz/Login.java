@@ -25,25 +25,7 @@ import javax.swing.SwingConstants;
 
 public class Login {
 
-	private JFrame frame;
-	private JTextField txUsuario;
-	private JTextField txContrasena;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Login window = new Login();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the application.
@@ -63,7 +45,7 @@ public class Login {
 		JButton btnAcceder = new JButton("Acceder");
 		JPasswordField txContrasena = new JPasswordField();
 
-		frame = new JFrame();
+		JFrame frame = new JFrame();
 
 		LoginController controlador = new LoginController(frame, txUsuario, txContrasena);
 

@@ -18,29 +18,22 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.ImportadorController;
+import controller.PrincipalController;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class Importador {
 
-	private JFrame frame;
-	private JTextField txtRuta;
+	private static Importador instancia = null;
+	
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Importador window = new Importador();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	public static Importador getInstance() {
+		if (instancia == null) {
+			instancia = new Importador();
+		}
+		//SetVisibletrue;
+		return instancia;
 	}
 
 	/**

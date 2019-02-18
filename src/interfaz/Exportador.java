@@ -27,12 +27,16 @@ public class Exportador {
 
 	private HashMap<String, Component> componentesExportador = new HashMap<String, Component>();
 	private ExportadorController exportadorController=new ExportadorController(componentesExportador);
-	/*private JFrame frame;
-	private JTextField txtRuta;*/
+	private static Exportador instancia = null;
+	
 
-	/**
-	 * Launch the application.
-	 */
+	public static Exportador getInstance() {
+		if (instancia == null) {
+			instancia = new Exportador();
+		}
+		return instancia;
+	}
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

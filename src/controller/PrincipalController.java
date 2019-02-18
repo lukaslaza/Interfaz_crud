@@ -3,26 +3,34 @@ package controller;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 import clases.Cliente;
 import clases.Taller;
+import interfaz.Creador;
 import interfaz.Exportador;
 import interfaz.Importador;
 import interfaz.Login;
 import interfaz.Principal;
 
-public class PrincipalController implements ActionListener, KeyListener, ChangeListener {
+public class PrincipalController implements ActionListener, KeyListener, ChangeListener, TableModelListener {
 
 	HashMap<String, Component> componentesPrincipal = new HashMap<String, Component>();
 
@@ -50,11 +58,36 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 	}
 
 	@Override
+	public void tableChanged(TableModelEvent evento) {
+		ArrayList<Object> valor = new ArrayList<Object>();
+
+		// table.getModel().getValueAt(e.getLastRow(),e.getColumn());
+		if (evento.getColumn() == database.funciones.getMetadatosTablaArray().size()) {
+			System.out
+					.println("Row : " + evento.getFirstRow() + " value :" + ((JTable) componentesPrincipal.get("table"))
+							.getValueAt(evento.getFirstRow(), evento.getColumn()));
+			if (((JTable) componentesPrincipal.get("table")).getValueAt(evento.getFirstRow(), evento.getColumn())
+					.equals(true)) {
+				valor.add(evento.getFirstRow());
+			} else {
+				valor.remove(evento.getFirstRow());
+			}
+		
+
+			for (int i = 0; i < valor.size(); i++) {
+				System.out.println(valor);
+			}
+		}
+
+	}
+
+	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String accion = arg0.getActionCommand();
 
+
 		if (accion.equalsIgnoreCase("crear")) {
-			System.out.println("crear");
+			new Creador();
 		}
 		if (accion.equalsIgnoreCase("Borrar")) {
 			System.out.println("borrar");
@@ -63,13 +96,13 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 			System.out.println("editar");
 		}
 		if (accion.equalsIgnoreCase("logout")) {
-			logout();
+			logout(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("importar")) {
-			Importador importador = new Importador();
+			Importador.getInstance();
 		}
 		if (accion.equalsIgnoreCase("exportar")) {
-			Exportador exportador = new Exportador();
+			Exportador.getInstance();
 		}
 
 		if (accion.equalsIgnoreCase("citas")) {
@@ -106,10 +139,50 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 			System.out.println("borrar");
 		}
 
+		// TODO LANZAR MENSAJE DE ALERTA SI NO SE PUEDEN AVANZAR A MAS PAGINAS
+		// Paginador
+		if (accion.equalsIgnoreCase("paginaSiguente")) {
+			if (!(Principal.getPagina() >= Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
+				Principal.setPagina(Principal.getPagina() + 1);
+				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
+				Principal.listarDatos(this, componentesPrincipal);
+			}
+		}
+		if (accion.equalsIgnoreCase("ultimaPagina")) {
+			if (!(Principal.getPagina() >= Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
+				Principal.setPagina(Principal.getTotalRegistros() / Principal.getColumnasPagina());
+				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
+				Principal.listarDatos(this, componentesPrincipal);
+			}
+		}
+		if (accion.equalsIgnoreCase("primeraPagina")) {
+
+			if (!(Principal.getPagina() <= 0
+					&& Principal.getPagina() >= Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
+				Principal.setPagina(1);
+				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
+				Principal.listarDatos(this, componentesPrincipal);
+			}
+		}
+
+		if (accion.equalsIgnoreCase("paginaAnterior")) {
+			if (!(Principal.getPagina() <= 0)) {
+				Principal.setPagina(Principal.getPagina() - 1);
+				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
+				Principal.listarDatos(this, componentesPrincipal);
+			}
+
+		}
+
+		System.out.println("Pagina Actual:" + Principal.getPagina());
+		System.out.println("Total Registros: " + Principal.getTotalRegistros());
+
 	}
 
-	public void logout() {
-		// Principal.logout((JFrame) componentesPrincipal.get("frame"));
+	public static void logout(PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
+		System.out.println("LOGOUT Efectuado");
+		((JFrame) componentesPrincipal.get("framePrincipal")).dispose();
 		new Login();
 	}
 
@@ -124,8 +197,11 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 			Principal.setColumnasPagina((int) s.getValue());
 		}
 
-		//TODO LISTAR DATOS DE LA MANERA CORRESPONDIENTE
-		
+		Principal.listarDatos(this, componentesPrincipal);
+		System.out.println("Pagina Actual:" + Principal.getPagina());
+		System.out.println("Total Registros: " + Principal.getTotalRegistros());
+
+		// TODO LISTAR DATOS DE LA MANERA CORRESPONDIENTE
 
 	}
 

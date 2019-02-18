@@ -130,6 +130,7 @@ public class funciones {
 			while (rs.next()) {
 				switch (Principal.getClaseActual()) {
 				case "taller":
+					//
 					clases.add(new Taller(rs.getString("nombre"), rs.getString("direccion"), rs.getString("telefono"),
 							rs.getFloat("latitud"), rs.getFloat("longitud")));
 					break;
@@ -232,16 +233,23 @@ public class funciones {
 		return clases;
 
 	}
+	
+	public static int getLimit() {
+		
+		return 0;
+		
+	}
 
 	public static Object[][] getDatos(int paginaActual, int registrosPagina) {
 		// Sentencia
-		String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " + registrosPagina * paginaActual
-				+ " , " + (registrosPagina * paginaActual) + registrosPagina + ";";
+		String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " + (( paginaActual*registrosPagina)-registrosPagina)
+				+ " , " + (registrosPagina * paginaActual) + ";";
+		
+	System.out.println(query);
 		// COnexion
 		Connection conn = (Connection) dbConexion.getConnection();
 		// Arraylist donde guardaremos el Resulset
 		ArrayList<Object> clases = new ArrayList<Object>();
-
 		java.sql.Statement stmt = null;
 		try {
 			stmt = conn.createStatement();
@@ -252,7 +260,8 @@ public class funciones {
 		try {
 			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
 			while (rs.next()) {
-				switch (Principal.getClaseActual()) {
+				
+				switch (Principal.getClaseActual().trim()) {
 				case "taller":
 					clases.add(new Taller(rs.getString("nombre"), rs.getString("direccion"), rs.getString("telefono"),
 							rs.getFloat("latitud"), rs.getFloat("longitud")));
@@ -279,7 +288,7 @@ public class funciones {
 					break;
 
 				default:
-					System.out.println("DEBES ACTUALIZAR ESTE METODO --> getDatos()");
+					System.out.println("DEBES ACTUALIZAR ESTE METODO --> getDatos()--> "+ Principal.getClaseActual());
 					break;
 				}
 
@@ -298,8 +307,8 @@ public class funciones {
 		ArrayList<Vehiculo_Tipo> vehiculo_tipos = new ArrayList<Vehiculo_Tipo>();
 		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
 
+		
 		for (int i = 0; i < clases.size(); i++) {
-
 			if (clases.get(i) instanceof Taller) {
 				talleres.add((Taller) clases.get(i));
 				datos[i][0] = talleres.get(i).getNombre();
@@ -357,6 +366,8 @@ public class funciones {
 
 		}
 
+		
+		
 		Principal.setTotalRegistros(datos.length);
 		return datos;
 	}
@@ -383,7 +394,7 @@ public class funciones {
 		try {
 			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
 			while (rs.next()) {
-				switch (Principal.getClaseActual()) {
+				switch (Principal.getClaseActual().trim()) {
 				case "taller":
 					clases.add(new Taller(rs.getString("nombre"), rs.getString("direccion"), rs.getString("telefono"),
 							rs.getFloat("latitud"), rs.getFloat("longitud")));
@@ -560,7 +571,6 @@ public class funciones {
 			clase = ("txtFiltro" + Principal.getClaseActual() + "_" + getMetadatosTablaArray().get(i).toLowerCase());
 			if (((JTextField) componentesPrincipal.get(clase)).getText() == null
 					|| ((JTextField) componentesPrincipal.get(clase)).getText() == ""
-					|| ((JTextField) componentesPrincipal.get(clase)).getText() == " "
 					|| ((JTextField) componentesPrincipal.get(clase)).getText().isEmpty()) {
 			} else {
 				sentencia = sentencia + "and " + getMetadatosTablaArray().get(i).toLowerCase() + " like " + "'"
@@ -570,5 +580,6 @@ public class funciones {
 		}
 
 	}
+	
 
 }

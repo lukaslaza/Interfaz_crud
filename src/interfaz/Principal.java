@@ -66,9 +66,9 @@ public class Principal {
 
 	private JFrame frame;
 
-	private static String claseActual = "cliente";
-	private static int pagina = 0;
-	private static int columnasPagina = 20;
+	private static String claseActual = "usuario";
+	private static int pagina = 1;
+	private static int columnasPagina = 30;
 	private static int totalRegistros = 1000;
 	// private JTextField txtPaginaActual;
 
@@ -95,10 +95,27 @@ public class Principal {
 	public static void listarDatos(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
 		System.out.println(getClaseActual());
-		
-			TablaListar tablaTaller = Principal.crearJTable(database.funciones.getDatos(pagina, columnasPagina),
-					database.funciones.getMetadatosTabla());
-			((JPanel) componentesPrincipal.get("panel_listar")).add(tablaTaller, BorderLayout.CENTER);
+		JTable table=null;
+		 table = new JTable(new TablaListar());
+
+		// componentesPrincipal.put("table", table);
+
+		// table.getModel().addTableModelListener(controladorPrincipal);
+
+		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+		table.setFillsViewportHeight(true);
+
+		/*
+		 * JScrollPane scrollPane = new JScrollPane();
+		 * scrollPane.setViewportView(table);
+		 */
+		table.setModel(new TablaListar());
+		((JPanel) componentesPrincipal.get("panel_listar")).add(table, BorderLayout.CENTER);
+		((JPanel) componentesPrincipal.get("panel_listar")).revalidate();
+		((JPanel) componentesPrincipal.get("panel_listar")).repaint();
+
+		((JPanel) componentesPrincipal.get("panel")).revalidate();
+		((JPanel) componentesPrincipal.get("panel")).repaint();
 
 	}
 
@@ -129,7 +146,7 @@ public class Principal {
 		paginas.setHorizontalAlignment(SwingConstants.LEFT);
 		paginas.setText("Registros:");
 
-		SpinnerModel paginadorValoresSpinner = new SpinnerNumberModel(35, 35, 3500, 5);
+		SpinnerModel paginadorValoresSpinner = new SpinnerNumberModel(30, 30, 3500, 5);
 
 		JSpinner paginadorSpinner = new JSpinner(paginadorValoresSpinner);
 		paginadorSpinner.setBounds(100, 100, 50, 30);
@@ -147,8 +164,7 @@ public class Principal {
 			HashMap<String, Component> componentesPrincipal) {
 
 		JPanel panelPaginador = new JPanel();
-		SpinnerModel paginaValoresSpinner = new SpinnerNumberModel(1, 1, 300, 1);
-
+		SpinnerModel paginaValoresSpinner = new SpinnerNumberModel(getPagina(), 1, 300, 1);
 
 		JSpinner paginaSpinner = new JSpinner(paginaValoresSpinner);
 		paginaSpinner.setBounds(100, 100, 50, 30);
@@ -173,12 +189,17 @@ public class Principal {
 		panelPaginador.add(btnPaginadorSiguente);
 		panelPaginador.add(btnPaginadorUltimo);
 
+		btnPaginadorSiguente.setActionCommand("paginaSiguente");
+		btnPaginadorUltimo.setActionCommand("ultimaPagina");
+		btnPaginadorPrimero.setActionCommand("primeraPagina");
+		btnPaginadorAnterior.setActionCommand("paginaAnterior");
+
 		btnPaginadorSiguente.addActionListener(controladorPrincipal);
 		btnPaginadorUltimo.addActionListener(controladorPrincipal);
 		btnPaginadorPrimero.addActionListener(controladorPrincipal);
 		btnPaginadorAnterior.addActionListener(controladorPrincipal);
 		paginaSpinner.addChangeListener(controladorPrincipal);
-		
+
 		return panelPaginador;
 	}
 
@@ -229,10 +250,6 @@ public class Principal {
 
 		return panel_acciones;
 	}
-
-	
-
-	
 
 	private Frame exportador() {
 		frame = new JFrame();
@@ -302,7 +319,7 @@ public class Principal {
 
 		menuBar.add(logout);
 
-		// logout.addActionListener(controladorPrincipal);
+		logout.addActionListener(controladorPrincipal);
 		importar.addActionListener(controladorPrincipal);
 		exportar.addActionListener(controladorPrincipal);
 		citas.addActionListener(controladorPrincipal);
@@ -312,7 +329,7 @@ public class Principal {
 		usuarios.addActionListener(controladorPrincipal);
 		vehiculos_tipos.addActionListener(controladorPrincipal);
 
-		// logout.setActionCommand("Logout");
+		logout.setActionCommand("logout");
 		importar.setActionCommand("importar");
 		exportar.setActionCommand("exportar");
 		citas.setActionCommand("citas");
@@ -351,12 +368,13 @@ public class Principal {
 
 		componentesPrincipal.put("framePrincipal", framePrincipal);
 		componentesPrincipal.put("panel_listar", panel_listar);
+		componentesPrincipal.put("panel", panel);
 
 		// controladorPrincipal DE LA CLASE
 		PrincipalController controladorPrincipal = new PrincipalController(componentesPrincipal);
 
 		acciones = crearAcciones(controladorPrincipal, componentesPrincipal);
-		panel_filtros =database.funciones.crearFiltros(controladorPrincipal, componentesPrincipal);
+		panel_filtros = database.funciones.crearFiltros(controladorPrincipal, componentesPrincipal);
 
 		// ESTABLECEMOS LAYAOUT
 		panel.setLayout(new BorderLayout(0, 0));
