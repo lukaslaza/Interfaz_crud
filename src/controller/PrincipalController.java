@@ -60,7 +60,6 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 	@Override
 	public void tableChanged(TableModelEvent evento) {
 		ArrayList<Object> valor = new ArrayList<Object>();
-
 		// table.getModel().getValueAt(e.getLastRow(),e.getColumn());
 		if (evento.getColumn() == database.funciones.getMetadatosTablaArray().size()) {
 			System.out
@@ -72,7 +71,6 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 			} else {
 				valor.remove(evento.getFirstRow());
 			}
-		
 
 			for (int i = 0; i < valor.size(); i++) {
 				System.out.println(valor);
@@ -84,7 +82,6 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String accion = arg0.getActionCommand();
-
 
 		if (accion.equalsIgnoreCase("crear")) {
 			new Creador();
@@ -142,6 +139,12 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		// TODO LANZAR MENSAJE DE ALERTA SI NO SE PUEDEN AVANZAR A MAS PAGINAS
 		// Paginador
 		if (accion.equalsIgnoreCase("paginaSiguente")) {
+			if (!(Principal.getPagina() >= Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
+				Principal.setPagina(Principal.getPagina() + 1);
+				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
+				Principal.listarDatos(this, componentesPrincipal);
+			}
+
 			if (!(Principal.getPagina() >= Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
 				Principal.setPagina(Principal.getPagina() + 1);
 				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());

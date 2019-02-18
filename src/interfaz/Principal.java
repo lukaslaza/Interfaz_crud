@@ -66,7 +66,7 @@ public class Principal {
 
 	private JFrame frame;
 
-	private static String claseActual = "usuario";
+	private static String claseActual = "taller";
 	private static int pagina = 1;
 	private static int columnasPagina = 30;
 	private static int totalRegistros = 1000;
@@ -98,21 +98,22 @@ public class Principal {
 		JTable table=null;
 		 table = new JTable(new TablaListar());
 
+		 TablaListar tabla=new TablaListar();
 		// componentesPrincipal.put("table", table);
 
-		// table.getModel().addTableModelListener(controladorPrincipal);
 
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setFillsViewportHeight(true);
 
 		/*
-		 * JScrollPane scrollPane = new JScrollPane();
-		 * scrollPane.setViewportView(table);
-		 */
-		table.setModel(new TablaListar());
-		((JPanel) componentesPrincipal.get("panel_listar")).add(table, BorderLayout.CENTER);
-		((JPanel) componentesPrincipal.get("panel_listar")).revalidate();
-		((JPanel) componentesPrincipal.get("panel_listar")).repaint();
+		 JScrollPane scrollPane = new JScrollPane();
+		 scrollPane.setViewportView(table);*/
+		 
+		table.setModel(tabla);
+		table.getModel().addTableModelListener(controladorPrincipal);
+		((JScrollPane) componentesPrincipal.get("panel_listar")).setViewportView(table);
+		((JScrollPane) componentesPrincipal.get("panel_listar")).revalidate();
+		((JScrollPane) componentesPrincipal.get("panel_listar")).repaint();
 
 		((JPanel) componentesPrincipal.get("panel")).revalidate();
 		((JPanel) componentesPrincipal.get("panel")).repaint();
@@ -361,7 +362,7 @@ public class Principal {
 		JPanel panel_1 = new JPanel();
 		JPanel panel_2 = new JPanel();
 
-		JPanel panel_listar = new JPanel();
+		JScrollPane panel_listar = new JScrollPane();
 		JPanel panelPaginador = new JPanel();
 		JPanel acciones = new JPanel();
 		JPanel panel_filtros = new JPanel();
@@ -380,7 +381,7 @@ public class Principal {
 		panel.setLayout(new BorderLayout(0, 0));
 		panel_1.setLayout(new BorderLayout(0, 0));
 		panel_2.setLayout(new BorderLayout(0, 0));
-		panel_listar.setLayout(new BorderLayout(0, 0));
+		//panel_listar.setLayout(new BorderLayout(0, 0));
 
 		// AÑADIMOS componentesPrincipal AL PANEL
 		((JFrame) framePrincipal).setJMenuBar(crearBar(controladorPrincipal, componentesPrincipal));

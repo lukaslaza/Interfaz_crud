@@ -16,7 +16,7 @@ import java.awt.GridLayout;
  * TableModel.
  */
 public class TablaListar extends AbstractTableModel {
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private String[] columnNames;
 	private Object[][] data;
 
