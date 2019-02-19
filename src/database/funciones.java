@@ -206,7 +206,13 @@ public class funciones {
 
 	}
 
-	public static ArrayList<Object> getDatosArray(String query, int paginaActual, int registrosPagina) {
+	public static ArrayList<Object> getDatosArray(String query) {
+		
+		if (query.equalsIgnoreCase(" ") || query.isEmpty() || query == null) {
+			query="SELECT * FROM " + Principal.getClaseActual();
+		} else {
+			
+		}
 		// Sentencia
 		/*
 		 * String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " +
@@ -271,11 +277,36 @@ public class funciones {
 
 	}
 
-	public static int getLimit() {
+	/**
+	 * DEVUELVE EL NUMERO MAXIMO DE COLUMNAS DE UN ALL
+	 * @return
+	 */
+	public static int getColumnMax() {
+		int contador = 0;
+		String query = "SELECT * FROM " + Principal.getClaseActual();
+		// COnexion
+		Connection conn = (Connection) dbConexion.getConnection();
 
-		return 0;
+		java.sql.Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+		}
+		try {
+			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
+			while (rs.next()) {
+				contador++;
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 
+		Principal.setTotalRegistros(contador);
+		
+		return contador;
 	}
+
 
 	public static Object[][] getDatos(int paginaActual, int registrosPagina) {
 		// Sentencia

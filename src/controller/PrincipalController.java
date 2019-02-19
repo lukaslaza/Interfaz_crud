@@ -110,33 +110,33 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 
 		if (accion.equalsIgnoreCase("citas")) {
 			Principal.setClaseActual("cita");
-			Principal.listarDatos(this, componentesPrincipal);
-			Principal.listarFiltros(this, componentesPrincipal);
+			Principal.CrearListarDatos("", this, componentesPrincipal);
+			Principal.CrearFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("clientes")) {
 			Principal.setClaseActual("cliente");
-			Principal.listarDatos(this, componentesPrincipal);
-			Principal.listarFiltros(this, componentesPrincipal);
+			Principal.CrearListarDatos("", this, componentesPrincipal);
+			Principal.CrearFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos")) {
 			Principal.setClaseActual("vehiculo");
-			Principal.listarDatos(this, componentesPrincipal);
-			Principal.listarFiltros(this, componentesPrincipal);
+			Principal.CrearListarDatos("", this, componentesPrincipal);
+			Principal.CrearFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("talleres")) {
 			Principal.setClaseActual("taller");
-			Principal.listarDatos(this, componentesPrincipal);
-			Principal.listarFiltros(this, componentesPrincipal);
+			Principal.CrearListarDatos("", this, componentesPrincipal);
+			Principal.CrearFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos_tipos")) {
 			Principal.setClaseActual("vehiculo_tipo");
-			Principal.listarDatos(this, componentesPrincipal);
-			Principal.listarFiltros(this, componentesPrincipal);
+			Principal.CrearListarDatos("", this, componentesPrincipal);
+			Principal.CrearFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("usuarios")) {
 			Principal.setClaseActual("usuario");
-			Principal.listarDatos(this, componentesPrincipal);
-			Principal.listarFiltros(this, componentesPrincipal);
+			Principal.CrearListarDatos("", this, componentesPrincipal);
+			Principal.CrearFiltros(this, componentesPrincipal);
 		}
 
 		if (accion.equalsIgnoreCase("filtrosBuscar")) {
@@ -152,23 +152,25 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		if (accion.equalsIgnoreCase("paginaSiguente")) {
 			if (!(Principal.getPagina() > Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
 				Principal.setPagina(Principal.getPagina() + 1);
-				Principal.listarDatos(this, componentesPrincipal);
+				Principal.CrearListarDatos("", this, componentesPrincipal);
 			}
 		}
 		if (accion.equalsIgnoreCase("ultimaPagina")) {
-				Principal.setPagina((int)Principal.getTotalRegistros() / Principal.getColumnasPagina());
-				Principal.listarDatos(this, componentesPrincipal);
-			
+			System.out.println(Principal.getTotalRegistros());
+			System.out.println(Principal.getColumnasPagina());
+			Principal.setPagina((int) Math.ceil(Principal.getTotalRegistros() / Principal.getColumnasPagina()));
+			Principal.CrearListarDatos("", this, componentesPrincipal);
+
 		}
 		if (accion.equalsIgnoreCase("primeraPagina")) {
 			Principal.setPagina(1);
-			Principal.listarDatos(this, componentesPrincipal);
+			Principal.CrearListarDatos("", this, componentesPrincipal);
 		}
 
 		if (accion.equalsIgnoreCase("paginaAnterior")) {
 			if (!(Principal.getPagina() == 1)) {
 				Principal.setPagina(Principal.getPagina() - 1);
-				Principal.listarDatos(this, componentesPrincipal);
+				Principal.CrearListarDatos("", this, componentesPrincipal);
 			}
 
 		}
@@ -179,9 +181,14 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 
 	}
 
+	/**
+	 * NOS HACE UN PRINCIPAL.DISPOSE() Y HABRE UN NUEVO LOGIN
+	 * 
+	 * @param controladorPrincipal
+	 * @param componentesPrincipal
+	 */
 	public static void logout(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
-		System.out.println("LOGOUT Efectuado");
 		((JFrame) componentesPrincipal.get("framePrincipal")).dispose();
 		new Login();
 	}
@@ -191,19 +198,18 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		JSpinner s = (JSpinner) e.getSource();
 
 		if (((JSpinner) componentesPrincipal.get("paginaSpinner")).getValue() == s.getValue()) {
-			//TODO HACER QUE NO SE PASE DE LAS PAGINAS MAXIMAS
-			Principal.setPagina((int) s.getValue());
+			// TODO HACER QUE NO SE PASE DE LAS PAGINAS MAXIMAS
+			if ((int) s.getValue() <= 1) {
+				Principal.setPagina(1);
+			} else {
+				Principal.setPagina((int) s.getValue());
+			}
 		}
 		if (((JSpinner) componentesPrincipal.get("paginadorSpinner")).getValue() == s.getValue()) {
 			Principal.setColumnasPagina((int) s.getValue());
 		}
 
-		Principal.listarDatos(this, componentesPrincipal);
-		System.out.println("Pagina Actual:" + Principal.getPagina());
-		System.out.println("Total Registros: " + Principal.getTotalRegistros());
-
-		// TODO LISTAR DATOS DE LA MANERA CORRESPONDIENTE
-
+		Principal.CrearListarDatos("", this, componentesPrincipal);
 	}
 
 }
