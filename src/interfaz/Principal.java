@@ -64,14 +64,11 @@ import javax.swing.SwingConstants;
 //TODO PONER TAMAÑO MINIMO A LA VENTANA
 
 public class Principal {
-
-	private JFrame frame;
-
-	private static String claseActual = "cita";
+	// VARIABLES DE LA CLASE
+	private static String claseActual = "taller";
 	private static int pagina = 1;
 	private static int columnasPagina = 30;
 	private static int totalRegistros = 1000;
-	// private JTextField txtPaginaActual;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -93,97 +90,76 @@ public class Principal {
 		initialize();
 	}
 
+	/**
+	 * LLAMA A UN METODO UNIVERSAL QUE CREA LOS FILTROS EN BASE A LA CLASE ACTUAL
+	 * LOS METE EN UN PANEL Y ESTE SE LE ASGINA AL PANEL TOP.SOUTH
+	 * 
+	 * @param controladorPrincipal
+	 * @param componentesPrincipal
+	 */
 	public static void CrearFiltros(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
 		JPanel panelFiltros = funciones.crearFiltros(controladorPrincipal, componentesPrincipal);
-
-		panelFiltros.revalidate();
-		panelFiltros.repaint();
 		componentesPrincipal.put("panelFiltros", panelFiltros);
-		
+
+		componentesPrincipal.get("panelFiltros").revalidate();
+		componentesPrincipal.get("panelFiltros").repaint();
+
 		((JPanel) componentesPrincipal.get("top")).add(panelFiltros, BorderLayout.SOUTH);
 		((JPanel) componentesPrincipal.get("top")).revalidate();
 		((JPanel) componentesPrincipal.get("top")).repaint();
 
 	}
 
-	public static void CrearListarDatos(PrincipalController controladorPrincipal,
+	/**
+	 * CREA UN JTABLE QUE HEREDA DE UN ABSTRACTMODELTABLE PARA CREARLO Y LO INSERTA EN UN JSCROLLPANE
+	 * @param sentencia SI ESTA VACIA CONSIGUE LOS DATOS AUTOMATICAMENTE, SI NO USA LA SENTENCIA PARA CONSEGUIR LOS DATOS
+	 * @param controladorPrincipal
+	 * @param componentesPrincipal
+	 */
+	public static void CrearListarDatos(String sentencia, PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
-		
+		TablaListar tabla = null;
 		JTable table = new JTable(new TablaListar());
-		TablaListar tabla = new TablaListar();
-		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-		table.setFillsViewportHeight(true);
-		table.setModel(tabla);
-		componentesPrincipal.put("table", table);
-		table.getModel().addTableModelListener(controladorPrincipal);
-		((JScrollPane) componentesPrincipal.get("panel_listar")).setViewportView(table);
-		
-		
-
-		((JPanel) componentesPrincipal.get("datos")).add(scrorllpane, BorderLayout.SOUTH);
-		((JScrollPane) componentesPrincipal.get("panel_listar")).revalidate();
-		((JScrollPane) componentesPrincipal.get("panel_listar")).repaint();
-
-	}
-
-	public static void listarDatos(String sentencia, PrincipalController controladorPrincipal,
-			HashMap<String, Component> componentesPrincipal) {
-		System.out.println(getClaseActual());
-		JTable table = null;
-		table = new JTable();
-
-		TablaListar tabla = new TablaListar(funciones.getDatos(sentencia), funciones.getMetadatosTabla());
-		// componentesPrincipal.put("table", table);
-
+		if (sentencia.equalsIgnoreCase(" ") || sentencia.isEmpty() || sentencia == null) {
+			tabla = new TablaListar();
+		} else {
+			tabla = new TablaListar(funciones.getDatos(sentencia), funciones.getMetadatosTabla());
+		}
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setFillsViewportHeight(true);
 
-		/*
-		 * JScrollPane scrollPane = new JScrollPane();
-		 * scrollPane.setViewportView(table);
-		 */
-
+		// CREO QUE ES INNECESARIA
 		table.setModel(tabla);
-		componentesPrincipal.put("table", table);
-		table.getModel().addTableModelListener(controladorPrincipal);
-		((JScrollPane) componentesPrincipal.get("panel_listar")).setViewportView(table);
-		((JScrollPane) componentesPrincipal.get("panel_listar")).revalidate();
-		((JScrollPane) componentesPrincipal.get("panel_listar")).repaint();
 
-		((JPanel) componentesPrincipal.get("panel")).revalidate();
-		((JPanel) componentesPrincipal.get("panel")).repaint();
+		componentesPrincipal.put("table", table);
+
+		table.getModel().addTableModelListener(controladorPrincipal);
+
+		((JScrollPane) componentesPrincipal.get("datos")).setViewportView(table);
+		((JScrollPane) componentesPrincipal.get("datos")).revalidate();
+		((JScrollPane) componentesPrincipal.get("datos")).repaint();
 
 	}
 
 	/**
-	 * Crea la tabla con nuestra clase TablaListar
+	 * CREA UN PANEL QUE CONTIENE UN FLOWLAYOUT.LEFT JLABEL Y UN SPINNER CREA UN
+	 * PANEL QUE CONTIENE LOS BOTONES DEL PAGINADOR Y EL SPINNER
 	 * 
-	 * @param data        datos a mostrar
-	 * @param columnNames cabeceras de las columnas
-	 * @return la tabla para poder utilizarla
+	 * @param controladorPrincipal
+	 * @param componentesPrincipal
 	 */
-	public static TablaListar crearJTable(Object[][] data, String[] columnNames) {
-		TablaListar table = new TablaListar(data, columnNames);
-		return table;
-	}
-
-	/**
-	 * Crea el Jlable y spinner lateral para poder seleccionar la cantidad de
-	 * registros por pagina
-	 * 
-	 * @return
-	 */
-	private JPanel crearBotonesPaginadorWest(PrincipalController controladorPrincipal,
+	private static void CrearPaginador(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
 
+		// LADO IZQUIERDO
 		JPanel panelPaginadorWest = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
 		JLabel paginas = new JLabel();
 		paginas.setHorizontalAlignment(SwingConstants.LEFT);
 		paginas.setText("Registros:");
 
-		SpinnerModel paginadorValoresSpinner = new SpinnerNumberModel(30, 30, 3500, 5);
+		SpinnerModel paginadorValoresSpinner = new SpinnerNumberModel(getColumnasPagina(), 30, 3500, 5);
 
 		JSpinner paginadorSpinner = new JSpinner(paginadorValoresSpinner);
 		paginadorSpinner.setBounds(100, 100, 50, 30);
@@ -191,40 +167,39 @@ public class Principal {
 		componentesPrincipal.put("paginadorSpinner", paginadorSpinner);
 
 		paginadorSpinner.addChangeListener(controladorPrincipal);
+
 		panelPaginadorWest.add(paginas);
 		panelPaginadorWest.add(paginadorSpinner);
 
-		return panelPaginadorWest;
-	}
+		((JPanel) componentesPrincipal.get("paginador")).add(panelPaginadorWest);
 
-	private JPanel crearBotonesPaginadorCentro(PrincipalController controladorPrincipal,
-			HashMap<String, Component> componentesPrincipal) {
-
-		JPanel panelPaginador = new JPanel();
+		// LADO CENTRAL
+		JPanel panelPaginadorCenter = new JPanel();
 		SpinnerModel paginaValoresSpinner = new SpinnerNumberModel(getPagina(), 1, 300, 1);
 
 		JSpinner paginaSpinner = new JSpinner(paginaValoresSpinner);
 		paginaSpinner.setBounds(100, 100, 50, 30);
 
-		JButton btnPaginadorSiguente = new JButton(">");
-		JButton btnPaginadorUltimo = new JButton(">>");
 		JButton btnPaginadorPrimero = new JButton("<<");
 		JButton btnPaginadorAnterior = new JButton("<");
+
+		JButton btnPaginadorSiguente = new JButton(">");
+		JButton btnPaginadorUltimo = new JButton(">>");
 
 		// HASMAP DE componentesPrincipal DEL PAGINADOR
 		componentesPrincipal.put("btnPaginadorSiguente", btnPaginadorSiguente);
 		componentesPrincipal.put("btnPaginadorUltimo", btnPaginadorUltimo);
 		componentesPrincipal.put("btnPaginadorPrimero", btnPaginadorPrimero);
 		componentesPrincipal.put("btnPaginadorAnterior", btnPaginadorAnterior);
-		componentesPrincipal.put("panelPaginador", panelPaginador);
+		componentesPrincipal.put("panelPaginadorCenter", panelPaginadorCenter);
 		componentesPrincipal.put("paginaSpinner", paginaSpinner);
 
 		// panelPaginador.add(paginadorSpinner);
-		panelPaginador.add(btnPaginadorPrimero);
-		panelPaginador.add(btnPaginadorAnterior);
-		panelPaginador.add(paginaSpinner);
-		panelPaginador.add(btnPaginadorSiguente);
-		panelPaginador.add(btnPaginadorUltimo);
+		panelPaginadorCenter.add(btnPaginadorPrimero);
+		panelPaginadorCenter.add(btnPaginadorAnterior);
+		panelPaginadorCenter.add(paginaSpinner);
+		panelPaginadorCenter.add(btnPaginadorSiguente);
+		panelPaginadorCenter.add(btnPaginadorUltimo);
 
 		btnPaginadorSiguente.setActionCommand("paginaSiguente");
 		btnPaginadorUltimo.setActionCommand("ultimaPagina");
@@ -237,20 +212,17 @@ public class Principal {
 		btnPaginadorAnterior.addActionListener(controladorPrincipal);
 		paginaSpinner.addChangeListener(controladorPrincipal);
 
-		return panelPaginador;
-	}
-
-	public static void logout(PrincipalController controladorPrincipal,
-			HashMap<String, Component> componentesPrincipal) {
+		((JPanel) componentesPrincipal.get("paginador")).add(panelPaginadorCenter);
 
 	}
 
 	/**
-	 * FINALIZADO NO TOCAR
+	 * CREA EL PANEL CON LOS BOTONES SUPERIORES DE CREAR, EDITAR Y BORRAR; SE LOS
+	 * ASIGNA AL PANEL TOP.NORTH EL PANEL TIENE UN GRIDLAYOUT --> 1 Fila, 3
+	 * Columnas.
 	 * 
-	 * Crea los 3 botones de las acciones de crear, borrar y editar
-	 * 
-	 * @return
+	 * @param controladorPrincipal
+	 * @param componentesPrincipal
 	 */
 	private static void crearAcciones(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
@@ -283,22 +255,17 @@ public class Principal {
 		accionesCrearDato.addActionListener(controladorPrincipal);
 
 		componentesPrincipal.put("panel_acciones", panel_acciones);
-		
+
 		((JPanel) componentesPrincipal.get("top")).add(panel_acciones, BorderLayout.NORTH);
 	}
 
-	private Frame exportador() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 1000, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout(0, 0));
-
-		return frame;
-
-	}
-
-	// TODO HACER QUE CUANDO PULSE LOGOUT SE CIERRE LA VENTANA Y SE CREE UN NUEVO
-	// LOGIN
+	/**
+	 * CREA EL LA BARRA CON LOS BOTONES Y SUS ACTION LISTENER CORRESPONDIENTES Y SE
+	 * LO ASIGNA AL FRAME
+	 * 
+	 * @param controladorPrincipal
+	 * @param componentesPrincipal
+	 */
 	private static void crearBar(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
 
@@ -381,21 +348,24 @@ public class Principal {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * CREA LA VENTANA Y LAS VISTAS DE ESTA
 	 */
 	private void initialize() {
-//COMPONENTES
 
+		// COMPONENTES
 		Frame framePrincipal = new JFrame();
 		JPanel top = new JPanel();
+		top.setLayout(new BorderLayout(0, 0));
 		JPanel topFiltros = new JPanel();
-		JPanel datos = new JPanel();
+		JScrollPane datos = new JScrollPane();
 		JPanel paginador = new JPanel();
+		paginador.setLayout(new GridLayout(0, 3, 0, 0));
 
 		framePrincipal.setBounds(100, 100, 1000, 700);
 		((JFrame) framePrincipal).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		((JFrame) framePrincipal).getContentPane().setLayout(new BorderLayout(0, 0));
 		framePrincipal.setVisible(true);
+
 		// INSERTAR DATOS AL HASHMAP
 		HashMap<String, Component> componentesPrincipal = new HashMap<String, Component>();
 
@@ -411,83 +381,14 @@ public class Principal {
 		// ASIGANCION DE VALORES A LOS COMPONENTES
 		crearAcciones(controladorPrincipal, componentesPrincipal);
 		crearBar(controladorPrincipal, componentesPrincipal);
-
 		CrearFiltros(controladorPrincipal, componentesPrincipal);
-		
-		CrearListadorDatos(controladorPrincipal, componentesPrincipal);
+		CrearListarDatos("",controladorPrincipal, componentesPrincipal);
+		CrearFiltros(controladorPrincipal, componentesPrincipal);
 		CrearPaginador(controladorPrincipal, componentesPrincipal);
-
-		top.setLayout(new BorderLayout(0, 0));
-		top.add(topAcciones, BorderLayout.NORTH);
-		top.add(topFiltros, BorderLayout.SOUTH);
 
 		((JFrame) framePrincipal).getContentPane().add(top, BorderLayout.NORTH);
 		((JFrame) framePrincipal).getContentPane().add(datos, BorderLayout.CENTER);
 		((JFrame) framePrincipal).getContentPane().add(paginador, BorderLayout.SOUTH);
-
-		((JFrame) framePrincipal).setJMenuBar(crearBar(controladorPrincipal, componentesPrincipal));
-		// framePrincipal.getContentPane().add(panel);
-
-		// datos=listarDatos(controladorPrincipal, componentesPrincipal);
-
-		/*
-		 * JPanel panel = new JPanel(); JPanel panel_1 = new JPanel(); JPanel panel_2 =
-		 * new JPanel();
-		 * 
-		 * JScrollPane panel_listar = new JScrollPane(); JPanel panelPaginador = new
-		 * JPanel(); JPanel acciones = new JPanel(); JPanel panel_filtros = new
-		 * JPanel();
-		 * 
-		 * 
-		 * panel.setLayout(new BorderLayout(0, 0)); panel_1.setLayout(new
-		 * BorderLayout(0, 0)); panel_2.setLayout(new BorderLayout(0, 0));
-		 * 
-		 * componentesPrincipal.put("framePrincipal", framePrincipal);
-		 * componentesPrincipal.put("panel_listar", panel_listar);
-		 * componentesPrincipal.put("panel", panel); componentesPrincipal.put("panel_2",
-		 * panel_2);
-		 * 
-		 * // controladorPrincipal DE LA CLASE PrincipalController controladorPrincipal
-		 * = new PrincipalController(componentesPrincipal);
-		 * 
-		 * acciones = crearAcciones(controladorPrincipal, componentesPrincipal);
-		 * panel_filtros = database.funciones.crearFiltros(controladorPrincipal,
-		 * componentesPrincipal);
-		 * 
-		 * 
-		 * // AÑADIMOS componentesPrincipal AL PANEL ((JFrame)
-		 * framePrincipal).setJMenuBar(crearBar(controladorPrincipal,
-		 * componentesPrincipal)); ((JFrame)
-		 * framePrincipal).getContentPane().add(panel);
-		 * 
-		 * panel.add(acciones, BorderLayout.NORTH); panel.add(panel_1,
-		 * BorderLayout.CENTER);
-		 * 
-		 * panel_1.add(panel_2, BorderLayout.CENTER); //
-		 * panel_1.add(crearNombreClaseSuperior(clases), BorderLayout.NORTH);
-		 * 
-		 * panel_1.add(panelPaginador, BorderLayout.SOUTH);
-		 * 
-		 * panelPaginador.setLayout(new GridLayout(0, 3, 0, 0));
-		 * panelPaginador.add(crearBotonesPaginadorWest(controladorPrincipal,
-		 * componentesPrincipal));
-		 * 
-		 * JPanel panelVacioPaginador = new JPanel();
-		 * panelPaginador.add(crearBotonesPaginadorCentro(controladorPrincipal,
-		 * componentesPrincipal)); panelPaginador.add(panelVacioPaginador);
-		 * 
-		 * panel_2.add(panel_listar, BorderLayout.CENTER);
-		 * 
-		 * // panel_listar.add(listadoTop, BorderLayout.NORTH); //
-		 * panel_listar.add(Principal.crearJTable(Taller.getTalleres(pagina, //
-		 * columnasPagina), // Taller.getTalleresMeta()), BorderLayout.CENTER); //
-		 * panel_listar.add(Principal.crearJTable(Cita.getCitas(), //
-		 * Usuario.getUsuarioColumnNames()), BorderLayout.CENTER);
-		 * 
-		 * // panel_4.add(CrearJTable(), BorderLayout.CENTER);
-		 * listarFiltros(controladorPrincipal, componentesPrincipal);
-		 * listarDatos(controladorPrincipal, componentesPrincipal);
-		 */
 	}
 
 	public static int getPagina() {
@@ -495,7 +396,11 @@ public class Principal {
 	}
 
 	public static void setPagina(int pagina) {
-		Principal.pagina = pagina;
+		if (pagina <= 1) {
+			Principal.pagina = 1;
+		} else {
+			Principal.pagina = pagina;
+		}
 	}
 
 	public static int getColumnasPagina() {
@@ -503,7 +408,12 @@ public class Principal {
 	}
 
 	public static void setColumnasPagina(int columnasPagina) {
-		Principal.columnasPagina = columnasPagina;
+
+		if (columnasPagina <= 30) {
+			Principal.columnasPagina = 30;
+		} else {
+			Principal.columnasPagina = columnasPagina;
+		}
 	}
 
 	public static String getClaseActual() {
@@ -511,7 +421,7 @@ public class Principal {
 	}
 
 	public static void setClaseActual(String claseActual) {
-		Principal.claseActual = claseActual;
+		Principal.claseActual = claseActual.toLowerCase();
 	}
 
 	public static int getTotalRegistros() {
