@@ -50,7 +50,39 @@ public class funciones {
 		return (int) Math.ceil(registrosTotales / registrosPorPagina);
 	}
 
+	public static void main(String[] args) {
+		getMetadatosTablaArrayType();
+	}
+
 	// METADATOS
+	public static ArrayList<Integer> getMetadatosTablaArrayType() {
+
+		String query = "Select * from " + Principal.getClaseActual();
+		Connection conn = (Connection) dbConexion.getConnection();
+		ArrayList<Integer> metadatos = new ArrayList<Integer>();
+		java.sql.Statement stmt = null;
+		try {
+			stmt = conn.createStatement();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+		}
+
+		try {
+			// EJECUTAMLS SENTENCIA
+			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
+			for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
+				// La metemos en un array
+				// metadatos.add(rs.getMetaData().getColumnType(1);
+				metadatos.add(rs.getMetaData().getColumnType(x));
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return metadatos;
+	}
+
 	public static ArrayList<String> getMetadatosTablaArray() {
 
 		String query = "Select * from " + Principal.getClaseActual();
@@ -382,7 +414,8 @@ public class funciones {
 		 * registrosPagina + ";";
 		 */
 		// COnexion
-		query = query + " LIMIT " + ((Principal.getPagina() * Principal.getColumnasPagina()) - Principal.getColumnasPagina()) + " , "
+		query = query + " LIMIT "
+				+ ((Principal.getPagina() * Principal.getColumnasPagina()) - Principal.getColumnasPagina()) + " , "
 				+ (Principal.getColumnasPagina() * Principal.getPagina()) + ";";
 		Connection conn = (Connection) dbConexion.getConnection();
 		// Arraylist donde guardaremos el Resulset
@@ -502,7 +535,6 @@ public class funciones {
 			}
 
 		}
-		
 
 		Principal.setTotalRegistros(datos.length);
 		return datos;
@@ -565,14 +597,14 @@ public class funciones {
 					"txtFiltro" + Principal.getClaseActual() + "_" + getMetadatosTablaArray().get(i).toLowerCase()))
 							.setText("");
 		}
-		
+
 		Principal.listarDatos(controladorPrincipal, componentesPrincipal);
 
 	}
 
 	public static void leerFiltros(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
-		String sentencia = "Select * from "+ Principal.getClaseActual()+" where true ";
+		String sentencia = "Select * from " + Principal.getClaseActual() + " where true ";
 		String clase = "";
 		for (int i = 0; i < getMetadatosTablaArray().size() - 1; i++) {
 			clase = ("txtFiltro" + Principal.getClaseActual() + "_" + getMetadatosTablaArray().get(i).toLowerCase());

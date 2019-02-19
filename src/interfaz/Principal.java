@@ -67,7 +67,7 @@ public class Principal {
 
 	private JFrame frame;
 
-	private static String claseActual = "taller";
+	private static String claseActual = "cita";
 	private static int pagina = 1;
 	private static int columnasPagina = 30;
 	private static int totalRegistros = 1000;
@@ -93,23 +93,24 @@ public class Principal {
 		initialize();
 	}
 
+	public static void listarFiltros(PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
+		JPanel filtros = funciones.crearFiltros(controladorPrincipal, componentesPrincipal);
+
+		filtros.revalidate();
+		filtros.repaint();
+		((JPanel) componentesPrincipal.get("panel_2")).add(filtros, BorderLayout.NORTH);
+		((JPanel) componentesPrincipal.get("panel_2")).revalidate();
+		((JPanel) componentesPrincipal.get("panel_2")).repaint();
+
+	}
+
 	public static void listarDatos(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
-		System.out.println(getClaseActual());
-		JTable table=null;
-		 table = new JTable(new TablaListar());
-
-		 TablaListar tabla=new TablaListar();
-		// componentesPrincipal.put("table", table);
-
-
+		JTable table = new JTable(new TablaListar());
+		TablaListar tabla = new TablaListar();
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setFillsViewportHeight(true);
-
-		/*
-		 JScrollPane scrollPane = new JScrollPane();
-		 scrollPane.setViewportView(table);*/
-		 
 		table.setModel(tabla);
 		componentesPrincipal.put("table", table);
 		table.getModel().addTableModelListener(controladorPrincipal);
@@ -117,28 +118,25 @@ public class Principal {
 		((JScrollPane) componentesPrincipal.get("panel_listar")).revalidate();
 		((JScrollPane) componentesPrincipal.get("panel_listar")).repaint();
 
-		((JPanel) componentesPrincipal.get("panel")).revalidate();
-		((JPanel) componentesPrincipal.get("panel")).repaint();
-
 	}
-	
-	public static void listarDatos(String sentencia,PrincipalController controladorPrincipal,
+
+	public static void listarDatos(String sentencia, PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
 		System.out.println(getClaseActual());
-		JTable table=null;
-		 table = new JTable();
+		JTable table = null;
+		table = new JTable();
 
-		 TablaListar tabla=new TablaListar(funciones.getDatos(sentencia), funciones.getMetadatosTabla());
+		TablaListar tabla = new TablaListar(funciones.getDatos(sentencia), funciones.getMetadatosTabla());
 		// componentesPrincipal.put("table", table);
-
 
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setFillsViewportHeight(true);
 
 		/*
-		 JScrollPane scrollPane = new JScrollPane();
-		 scrollPane.setViewportView(table);*/
-		 
+		 * JScrollPane scrollPane = new JScrollPane();
+		 * scrollPane.setViewportView(table);
+		 */
+
 		table.setModel(tabla);
 		componentesPrincipal.put("table", table);
 		table.getModel().addTableModelListener(controladorPrincipal);
@@ -379,17 +377,58 @@ public class Principal {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+//COMPONENTES
+		
 
-		HashMap<String, Component> componentesPrincipal = new HashMap<String, Component>();
-
-		// DEFINIMOS componentesPrincipal NECESARIOS
-		Frame framePrincipal = new JFrame();
-		framePrincipal.setBounds(100, 100, 1000, 700);
+		Frame framePrincipal = new JFrame();JPanel top=new JPanel();
+		JPanel topAcciones=new JPanel();
+		JPanel topFiltros=new JPanel();
+		JPanel datos=new JPanel();
+		JPanel paginador=new JPanel();
+		
+	framePrincipal.setBounds(100, 100, 1000, 700);
 		((JFrame) framePrincipal).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		((JFrame) framePrincipal).getContentPane().setLayout(new BorderLayout(0, 0));
 		framePrincipal.setVisible(true);
+		//INSERTAR DATOS AL HASHMAP
+		HashMap<String, Component> componentesPrincipal = new HashMap<String, Component>();
+		
+		componentesPrincipal.put("framePrincipal", framePrincipal);
+		componentesPrincipal.put("top", top);
+		componentesPrincipal.put("topAcciones", topAcciones);
+		componentesPrincipal.put("topFiltros", topFiltros);
+		componentesPrincipal.put("datos", datos);
+		componentesPrincipal.put("paginador", paginador);
+		
+		//CONTROLADOR
+		PrincipalController controladorPrincipal = new PrincipalController(componentesPrincipal);
+		
+		//ASIGANCION DE VALORES A LOS COMPONENTES
+		CrearBotones(controladorPrincipal, componentesPrincipal);
+		CrearBar(controladorPrincipal, componentesPrincipal);
+		CrearFiltros(controladorPrincipal, componentesPrincipal);
+		CrearListadorDatos(controladorPrincipal, componentesPrincipal);
+		CrearPaginador(controladorPrincipal, componentesPrincipal);
+		
+		top.setLayout(new BorderLayout(0, 0));
+		top.add(topAcciones, BorderLayout.NORTH);
+		top.add(topFiltros, BorderLayout.SOUTH);
+		
+		((JFrame) framePrincipal).getContentPane().add(top, BorderLayout.NORTH);
+		((JFrame) framePrincipal).getContentPane().add(datos, BorderLayout.CENTER);
+		((JFrame) framePrincipal).getContentPane().add(paginador, BorderLayout.SOUTH);
+		
+		
 
-		JPanel panel = new JPanel();
+		
+		
+		((JFrame) framePrincipal).setJMenuBar(crearBar(controladorPrincipal, componentesPrincipal));
+		//framePrincipal.getContentPane().add(panel);
+		
+		
+		//datos=listarDatos(controladorPrincipal, componentesPrincipal);
+		
+/*		JPanel panel = new JPanel();
 		JPanel panel_1 = new JPanel();
 		JPanel panel_2 = new JPanel();
 
@@ -397,10 +436,16 @@ public class Principal {
 		JPanel panelPaginador = new JPanel();
 		JPanel acciones = new JPanel();
 		JPanel panel_filtros = new JPanel();
+		
+
+		panel.setLayout(new BorderLayout(0, 0));
+		panel_1.setLayout(new BorderLayout(0, 0));
+		panel_2.setLayout(new BorderLayout(0, 0));
 
 		componentesPrincipal.put("framePrincipal", framePrincipal);
 		componentesPrincipal.put("panel_listar", panel_listar);
 		componentesPrincipal.put("panel", panel);
+		componentesPrincipal.put("panel_2", panel_2);
 
 		// controladorPrincipal DE LA CLASE
 		PrincipalController controladorPrincipal = new PrincipalController(componentesPrincipal);
@@ -408,11 +453,6 @@ public class Principal {
 		acciones = crearAcciones(controladorPrincipal, componentesPrincipal);
 		panel_filtros = database.funciones.crearFiltros(controladorPrincipal, componentesPrincipal);
 
-		// ESTABLECEMOS LAYAOUT
-		panel.setLayout(new BorderLayout(0, 0));
-		panel_1.setLayout(new BorderLayout(0, 0));
-		panel_2.setLayout(new BorderLayout(0, 0));
-		//panel_listar.setLayout(new BorderLayout(0, 0));
 
 		// AÑADIMOS componentesPrincipal AL PANEL
 		((JFrame) framePrincipal).setJMenuBar(crearBar(controladorPrincipal, componentesPrincipal));
@@ -434,7 +474,6 @@ public class Principal {
 		panelPaginador.add(panelVacioPaginador);
 
 		panel_2.add(panel_listar, BorderLayout.CENTER);
-		panel_2.add(panel_filtros, BorderLayout.NORTH);
 
 		// panel_listar.add(listadoTop, BorderLayout.NORTH);
 		// panel_listar.add(Principal.crearJTable(Taller.getTalleres(pagina,
@@ -444,8 +483,8 @@ public class Principal {
 		// Usuario.getUsuarioColumnNames()), BorderLayout.CENTER);
 
 		// panel_4.add(CrearJTable(), BorderLayout.CENTER);
-
-		listarDatos(controladorPrincipal, componentesPrincipal);
+		listarFiltros(controladorPrincipal, componentesPrincipal);
+		listarDatos(controladorPrincipal, componentesPrincipal);*/
 	}
 
 	public static int getPagina() {

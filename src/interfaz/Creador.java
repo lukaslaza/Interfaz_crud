@@ -67,6 +67,8 @@ public class Creador {
 		frame.setVisible(true);
 		frame.setResizable(false);
 
+		componentesCreador.put("frame", frame);
+
 		JPanel titulo = new JPanel();
 		frame.getContentPane().add(titulo, BorderLayout.NORTH);
 

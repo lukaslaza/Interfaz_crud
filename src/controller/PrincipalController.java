@@ -111,26 +111,32 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		if (accion.equalsIgnoreCase("citas")) {
 			Principal.setClaseActual("cita");
 			Principal.listarDatos(this, componentesPrincipal);
+			Principal.listarFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("clientes")) {
 			Principal.setClaseActual("cliente");
 			Principal.listarDatos(this, componentesPrincipal);
+			Principal.listarFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos")) {
 			Principal.setClaseActual("vehiculo");
 			Principal.listarDatos(this, componentesPrincipal);
+			Principal.listarFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("talleres")) {
 			Principal.setClaseActual("taller");
 			Principal.listarDatos(this, componentesPrincipal);
+			Principal.listarFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("vehiculos_tipos")) {
 			Principal.setClaseActual("vehiculo_tipo");
 			Principal.listarDatos(this, componentesPrincipal);
+			Principal.listarFiltros(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("usuarios")) {
 			Principal.setClaseActual("usuario");
 			Principal.listarDatos(this, componentesPrincipal);
+			Principal.listarFiltros(this, componentesPrincipal);
 		}
 
 		if (accion.equalsIgnoreCase("filtrosBuscar")) {
@@ -144,44 +150,30 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		// TODO LANZAR MENSAJE DE ALERTA SI NO SE PUEDEN AVANZAR A MAS PAGINAS
 		// Paginador
 		if (accion.equalsIgnoreCase("paginaSiguente")) {
-			if (!(Principal.getPagina() >= Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
+			if (!(Principal.getPagina() > Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
 				Principal.setPagina(Principal.getPagina() + 1);
-				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
-				Principal.listarDatos(this, componentesPrincipal);
-			}
-
-			if (!(Principal.getPagina() >= Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
-				Principal.setPagina(Principal.getPagina() + 1);
-				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
 				Principal.listarDatos(this, componentesPrincipal);
 			}
 		}
 		if (accion.equalsIgnoreCase("ultimaPagina")) {
-			if (!(Principal.getPagina() >= Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
-				Principal.setPagina(Principal.getTotalRegistros() / Principal.getColumnasPagina());
-				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
+				Principal.setPagina((int)Principal.getTotalRegistros() / Principal.getColumnasPagina());
 				Principal.listarDatos(this, componentesPrincipal);
-			}
+			
 		}
 		if (accion.equalsIgnoreCase("primeraPagina")) {
-
-			if (!(Principal.getPagina() <= 0
-					&& Principal.getPagina() >= Principal.getTotalRegistros() / Principal.getColumnasPagina())) {
-				Principal.setPagina(1);
-				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
-				Principal.listarDatos(this, componentesPrincipal);
-			}
+			Principal.setPagina(1);
+			Principal.listarDatos(this, componentesPrincipal);
 		}
 
 		if (accion.equalsIgnoreCase("paginaAnterior")) {
-			if (!(Principal.getPagina() <= 0)) {
+			if (!(Principal.getPagina() == 1)) {
 				Principal.setPagina(Principal.getPagina() - 1);
-				((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
 				Principal.listarDatos(this, componentesPrincipal);
 			}
 
 		}
 
+		((JSpinner) componentesPrincipal.get("paginaSpinner")).setValue(Principal.getPagina());
 		System.out.println("Pagina Actual:" + Principal.getPagina());
 		System.out.println("Total Registros: " + Principal.getTotalRegistros());
 
@@ -199,6 +191,7 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 		JSpinner s = (JSpinner) e.getSource();
 
 		if (((JSpinner) componentesPrincipal.get("paginaSpinner")).getValue() == s.getValue()) {
+			//TODO HACER QUE NO SE PASE DE LAS PAGINAS MAXIMAS
 			Principal.setPagina((int) s.getValue());
 		}
 		if (((JSpinner) componentesPrincipal.get("paginadorSpinner")).getValue() == s.getValue()) {
