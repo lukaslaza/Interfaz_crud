@@ -17,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.mariadb.jdbc.internal.com.send.SendChangeDbPacket;
+
 import clases.Cita;
 import clases.Cliente;
 import clases.Taller;
@@ -171,11 +173,14 @@ public class funciones {
 		return clases;
 
 	}
-	
+
 	public static ArrayList<Object> getDatosArray(String query, int paginaActual, int registrosPagina) {
 		// Sentencia
-		/*String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " + registrosPagina * paginaActual
-				+ " , " + (registrosPagina * paginaActual) + registrosPagina + ";";*/
+		/*
+		 * String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " +
+		 * registrosPagina * paginaActual + " , " + (registrosPagina * paginaActual) +
+		 * registrosPagina + ";";
+		 */
 		// COnexion
 		Connection conn = (Connection) dbConexion.getConnection();
 		// Arraylist donde guardaremos el Resulset
@@ -233,19 +238,19 @@ public class funciones {
 		return clases;
 
 	}
-	
+
 	public static int getLimit() {
-		
+
 		return 0;
-		
+
 	}
 
 	public static Object[][] getDatos(int paginaActual, int registrosPagina) {
 		// Sentencia
-		String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " + (( paginaActual*registrosPagina)-registrosPagina)
-				+ " , " + (registrosPagina * paginaActual) + ";";
-		
-	System.out.println(query);
+		String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT "
+				+ ((paginaActual * registrosPagina) - registrosPagina) + " , " + (registrosPagina * paginaActual) + ";";
+
+		System.out.println(query);
 		// COnexion
 		Connection conn = (Connection) dbConexion.getConnection();
 		// Arraylist donde guardaremos el Resulset
@@ -260,7 +265,7 @@ public class funciones {
 		try {
 			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
 			while (rs.next()) {
-				
+
 				switch (Principal.getClaseActual().trim()) {
 				case "taller":
 					clases.add(new Taller(rs.getString("nombre"), rs.getString("direccion"), rs.getString("telefono"),
@@ -288,7 +293,7 @@ public class funciones {
 					break;
 
 				default:
-					System.out.println("DEBES ACTUALIZAR ESTE METODO --> getDatos()--> "+ Principal.getClaseActual());
+					System.out.println("DEBES ACTUALIZAR ESTE METODO --> getDatos()--> " + Principal.getClaseActual());
 					break;
 				}
 
@@ -307,7 +312,6 @@ public class funciones {
 		ArrayList<Vehiculo_Tipo> vehiculo_tipos = new ArrayList<Vehiculo_Tipo>();
 		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
 
-		
 		for (int i = 0; i < clases.size(); i++) {
 			if (clases.get(i) instanceof Taller) {
 				talleres.add((Taller) clases.get(i));
@@ -366,13 +370,11 @@ public class funciones {
 
 		}
 
-		
-		
 		Principal.setTotalRegistros(datos.length);
 		return datos;
 	}
 
-	public static Object[][] getDatos(String query, int paginaActual, int registrosPagina) {
+	public static Object[][] getDatos(String query) {
 		// Sentencia
 		/*
 		 * String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " +
@@ -380,6 +382,8 @@ public class funciones {
 		 * registrosPagina + ";";
 		 */
 		// COnexion
+		query = query + " LIMIT " + ((Principal.getPagina() * Principal.getColumnasPagina()) - Principal.getColumnasPagina()) + " , "
+				+ (Principal.getColumnasPagina() * Principal.getPagina()) + ";";
 		Connection conn = (Connection) dbConexion.getConnection();
 		// Arraylist donde guardaremos el Resulset
 		ArrayList<Object> clases = new ArrayList<Object>();
@@ -498,6 +502,7 @@ public class funciones {
 			}
 
 		}
+		
 
 		Principal.setTotalRegistros(datos.length);
 		return datos;
@@ -560,12 +565,14 @@ public class funciones {
 					"txtFiltro" + Principal.getClaseActual() + "_" + getMetadatosTablaArray().get(i).toLowerCase()))
 							.setText("");
 		}
+		
+		Principal.listarDatos(controladorPrincipal, componentesPrincipal);
 
 	}
 
 	public static void leerFiltros(PrincipalController controladorPrincipal,
 			HashMap<String, Component> componentesPrincipal) {
-		String sentencia = " where true ";
+		String sentencia = "Select * from "+ Principal.getClaseActual()+" where true ";
 		String clase = "";
 		for (int i = 0; i < getMetadatosTablaArray().size() - 1; i++) {
 			clase = ("txtFiltro" + Principal.getClaseActual() + "_" + getMetadatosTablaArray().get(i).toLowerCase());
@@ -573,13 +580,13 @@ public class funciones {
 					|| ((JTextField) componentesPrincipal.get(clase)).getText() == ""
 					|| ((JTextField) componentesPrincipal.get(clase)).getText().isEmpty()) {
 			} else {
-				sentencia = sentencia + "and " + getMetadatosTablaArray().get(i).toLowerCase() + " like " + "'"
-						+ ((JTextField) componentesPrincipal.get(clase)).getText() + "' ";
+				sentencia = sentencia + "and " + getMetadatosTablaArray().get(i).toLowerCase() + " like " + "'%"
+						+ ((JTextField) componentesPrincipal.get(clase)).getText() + "%' ";
 			}
 
 		}
 
+		Principal.listarDatos(sentencia, controladorPrincipal, componentesPrincipal);
 	}
-	
 
 }

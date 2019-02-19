@@ -17,6 +17,7 @@ import clases.Taller;
 import clases.Usuario;
 import clases.dbConexion;
 import controller.PrincipalController;
+import database.funciones;
 
 import java.awt.GridBagLayout;
 import javax.swing.JMenuBar;
@@ -110,6 +111,36 @@ public class Principal {
 		 scrollPane.setViewportView(table);*/
 		 
 		table.setModel(tabla);
+		componentesPrincipal.put("table", table);
+		table.getModel().addTableModelListener(controladorPrincipal);
+		((JScrollPane) componentesPrincipal.get("panel_listar")).setViewportView(table);
+		((JScrollPane) componentesPrincipal.get("panel_listar")).revalidate();
+		((JScrollPane) componentesPrincipal.get("panel_listar")).repaint();
+
+		((JPanel) componentesPrincipal.get("panel")).revalidate();
+		((JPanel) componentesPrincipal.get("panel")).repaint();
+
+	}
+	
+	public static void listarDatos(String sentencia,PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
+		System.out.println(getClaseActual());
+		JTable table=null;
+		 table = new JTable();
+
+		 TablaListar tabla=new TablaListar(funciones.getDatos(sentencia), funciones.getMetadatosTabla());
+		// componentesPrincipal.put("table", table);
+
+
+		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+		table.setFillsViewportHeight(true);
+
+		/*
+		 JScrollPane scrollPane = new JScrollPane();
+		 scrollPane.setViewportView(table);*/
+		 
+		table.setModel(tabla);
+		componentesPrincipal.put("table", table);
 		table.getModel().addTableModelListener(controladorPrincipal);
 		((JScrollPane) componentesPrincipal.get("panel_listar")).setViewportView(table);
 		((JScrollPane) componentesPrincipal.get("panel_listar")).revalidate();

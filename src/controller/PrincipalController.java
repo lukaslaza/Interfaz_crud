@@ -61,7 +61,8 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 	public void tableChanged(TableModelEvent evento) {
 		ArrayList<Object> valor = new ArrayList<Object>();
 		// table.getModel().getValueAt(e.getLastRow(),e.getColumn());
-		if (evento.getColumn() == database.funciones.getMetadatosTablaArray().size()) {
+		int totalcolumnas = database.funciones.getMetadatosTablaArray().size();
+		if (evento.getColumn() == (totalcolumnas - 1)) {
 			System.out
 					.println("Row : " + evento.getFirstRow() + " value :" + ((JTable) componentesPrincipal.get("table"))
 							.getValueAt(evento.getFirstRow(), evento.getColumn()));
@@ -69,11 +70,11 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 					.equals(true)) {
 				valor.add(evento.getFirstRow());
 			} else {
-				valor.remove(evento.getFirstRow());
+				valor.remove(evento);
 			}
 
 			for (int i = 0; i < valor.size(); i++) {
-				System.out.println(valor);
+				System.out.println((TableModelEvent) valor.get(i));
 			}
 		}
 
@@ -87,18 +88,23 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 			new Creador();
 		}
 		if (accion.equalsIgnoreCase("Borrar")) {
-			System.out.println("borrar");
+			// TODO CONSEGUIR TODOS LOS BOOLEAN TRUE SU PRIMER VALOR QUE DEBERIA SER LA
+			// CLAVE Y DELETE FROM DATABASE
 		}
 		if (accion.equalsIgnoreCase("editar")) {
-			System.out.println("editar");
+			// TODO VER QUE SOLO ESTE SELECCIONADO UN VALOR; Y SI PULSAMOS SOBRE EDITAR QUE
+			// SE ABRA UN CREADOR CON LOS DATOS YA RELLENADOS Y QUE SE PUEDA EDITAR; UPDATE
+			// FROM O DELETE Y UN INSERT
 		}
 		if (accion.equalsIgnoreCase("logout")) {
 			logout(this, componentesPrincipal);
 		}
 		if (accion.equalsIgnoreCase("importar")) {
+			// TODO SOLO CREA LA VENTANA NO HACE NADA
 			Importador.getInstance();
 		}
 		if (accion.equalsIgnoreCase("exportar")) {
+			// TODO SOLO CREA LA VENTANA NO HACE NADA
 			Exportador.getInstance();
 		}
 
@@ -133,7 +139,6 @@ public class PrincipalController implements ActionListener, KeyListener, ChangeL
 
 		if (accion.equalsIgnoreCase("borrarFiltros")) {
 			database.funciones.vaciarFiltros(this, componentesPrincipal);
-			System.out.println("borrar");
 		}
 
 		// TODO LANZAR MENSAJE DE ALERTA SI NO SE PUEDEN AVANZAR A MAS PAGINAS
