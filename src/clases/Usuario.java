@@ -2,6 +2,7 @@ package clases;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ public class Usuario {
 		setToken(clave);
 		setFecha_inicio(fecha_inicio);
 		setFecha_fin(fecha_fin);
+	}
+
+	public Usuario() {
 	}
 
 	// DATOS HABITUALES
@@ -79,111 +83,51 @@ public class Usuario {
 		return fecha_fin;
 	}
 
-	// DB
-	/**
-	 * Funcion que nos devulve los nombre de las cabeceras de la tabla Usuario
-	 * 
-	 * @return String[] con las cabeceras
-	 */
-	public static String[] getUsuarioColumnNames() {
-
-		String query = "Select * from usuario";
+	public void insertarse() {
+		String query = "INSERT INTO ususario (usuario, clave, token, fecha_inicio, fecha_fin) VALUES(?,?,?,?,?)";
 		Connection conn = (Connection) dbConexion.getConnection();
-		ArrayList<String> metadatos = new ArrayList<String>();
-		java.sql.Statement stmt = null;
 		try {
-			stmt = conn.createStatement();
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, getUsuario());
+			stmt.setString(2, getClave());
+			stmt.setString(3, getToken());
+			stmt.setDate(4, getFecha_inicio());
+			stmt.setDate(5, getFecha_fin());
+			stmt.executeUpdate();
 		} catch (SQLException errorStmt) {
 			errorStmt.printStackTrace();
+			System.out.println("Error al insertar el Usuario");
 		}
-
-		try {
-			// EJECUTAMOS LA SENTENCIA
-			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
-			for (int x = 1; x <= rs.getMetaData().getColumnCount(); x++) {
-				// La metemos en un array
-				metadatos.add(rs.getMetaData().getColumnName(x).toUpperCase());
-			}
-			metadatos.add("Seleccionar".toUpperCase());
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		String[] cabeceras = new String[metadatos.size()];
-
-		for (int i = 0; i < metadatos.size(); i++) {
-			cabeceras[i] = metadatos.get(i);
-		}
-		return cabeceras;
 	}
 
-	// POSIBLE ERROR CON LOS VALORES VACIOS
-	/**
-	 * Devuelve Todos los usuarios
-	 * 
-	 * @return Object[][] de citas
-	 */
-	public static Object[][] getUsuarios() {
-		// Sentencia
-		// String query = "Select * from taller LIMIT " + ini + " , " + fin;
-		String query = "Select * from usuario ";
-		// Conexion
+	public static void modificar(Usuario usuario) {
+		String query = "UPDATE usuario SET clave = '?', token = '?', fecha_inicio = '?', fecha_fin = '?' "
+				+ " WHERE usuario like '?' ";
 		Connection conn = (Connection) dbConexion.getConnection();
-		// Arraylist donde guardaremos el Resulset
-		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
-
-		java.sql.Statement stmt = null;
 		try {
-			stmt = conn.createStatement();
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, usuario.getClave());
+			stmt.setString(2, usuario.getToken());
+			stmt.setDate(3, usuario.getFecha_inicio() );
+			stmt.setDate(4, usuario.getFecha_fin());	
+			stmt.setString(5, usuario.getUsuario());
+			stmt.executeUpdate();
 		} catch (SQLException errorStmt) {
 			errorStmt.printStackTrace();
+			System.out.println("Error al insertar la Usuario");
 		}
+	}
 
+	public void borrarse() {
+		String query = " Delete from usuario wehere usuario like '?' ";
+		Connection conn = (Connection) dbConexion.getConnection();
 		try {
-			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
-			while (rs.next()) {
-				Usuario u1 = new Usuario(rs.getString("usuario"), rs.getString("clave"));
-				if (rs.getString("token") != null) {
-					u1.setToken(rs.getString("token"));
-				}
-				if (rs.getDate("fecha_inicio") != null) {
-					u1.setFecha_inicio(rs.getDate("fecha_inicio"));
-				}
-				if (rs.getDate("fecha_fin") != null) {
-					u1.setFecha_fin(rs.getDate("fecha_fin"));
-				}
-				usuarios.add(u1);
-			}
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, getUsuario());
+			stmt.executeUpdate();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+			System.out.println("Error al borrar la Usuario");
 		}
-		Object[][] datosUsuario = new Object[usuarios.size()][getUsuarioColumnNames().length];
-		for (int i = 0; i < usuarios.size(); i++) {
-
-			datosUsuario[i][0] = usuarios.get(i).getUsuario();
-			datosUsuario[i][1] = usuarios.get(i).getClave();
-
-			if (usuarios.get(i).getToken() == null || usuarios.get(i).getToken() == " ") {
-				// datosUsuario[i][2] = " ";
-			} else {
-				datosUsuario[i][2] = usuarios.get(i).getToken();
-			}
-
-			if (usuarios.get(i).getFecha_inicio() == null) {
-				// datosUsuario[i][3] = null;
-			} else {
-				datosUsuario[i][3] = usuarios.get(i).getFecha_inicio();
-			}
-			if (usuarios.get(i).getFecha_fin() == null) {
-				// datosUsuario[i][4] = null;
-			} else {
-				datosUsuario[i][4] = usuarios.get(i).getFecha_fin();
-			}
-			datosUsuario[i][5] = new Boolean(false);
-		}
-
-		return datosUsuario;
-
 	}
 }

@@ -12,6 +12,12 @@ import funciones.funcionesError;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.time.Period;
 
 import interfaz.Principal;
 
@@ -91,6 +97,32 @@ public class LoginController implements ActionListener, KeyListener {
 			frame.dispose();
 		}
 
+	}
+	
+	private static void peticion() {
+	     URL url;
+	        try {
+	            // Creando un objeto URL
+	            url = new URL("http://andresterol.int.elcampico.org/taller/login:8080");
+	 
+	            // Realizando la petición GET
+	            URLConnection con = url.openConnection();
+	 
+	            // Leyendo el resultado
+	            BufferedReader in = new BufferedReader(new InputStreamReader(
+	                    con.getInputStream()));
+	 
+	            String linea;
+	            while ((linea = in.readLine()) != null) {
+	                System.out.println(linea);
+	            }
+	        } catch (IOException e) {
+	            System.out.println(e.getMessage());
+	        }
+	}
+	
+	public static void main(String[] args) {
+		peticion();
 	}
 
 }

@@ -3,6 +3,7 @@ package clases;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,6 +25,13 @@ public class Cliente {
 		setApellidos(apellidos);
 		setTelefono(telefono);
 		setId_usuario(id_usuario);
+	}
+	public Cliente(String dni) {
+		setDni(dni);
+	}
+
+	public Cliente() {
+
 	}
 
 	// SET AND GET
@@ -74,4 +82,55 @@ public class Cliente {
 	public void setId_usuario(String id_usuario) {
 		this.id_usuario = id_usuario;
 	}
+
+	public void insertarse() {
+		String query = "INSERT INTO cliente (dni, nombre, apellidos, telefono, direccion, id_usuario) VALUES(?,?,?,?,?,?)";
+		Connection conn = (Connection) dbConexion.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, getDni());
+			stmt.setString(2, getNombre());
+			stmt.setString(3, getApellidos());
+			stmt.setString(4, getTelefono());
+			stmt.setString(5, getDireccion());
+			stmt.setString(6, getId_usuario());
+			stmt.executeUpdate();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+			System.out.println("Error al insertar el Cliente");
+		}
+	}
+	
+	public static void modificar(Cliente cliente) {
+		String query = "UPDATE cliente SET nombre = '?', apellidos = '?', telefono = '?', "
+				+ "direccion = '?', id_usuario = '?' WHERE dni like '?'";
+		Connection conn = (Connection) dbConexion.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, cliente.getNombre());
+			stmt.setString(2, cliente.getApellidos());
+			stmt.setString(3, cliente.getTelefono());
+			stmt.setString(4, cliente.getDireccion());
+			stmt.setString(5, cliente.getId_usuario());
+			stmt.setString(6, cliente.getDni());
+			stmt.executeUpdate();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+			System.out.println("Error al insertar el Cliente");
+		}
+	}
+
+	public void borrarse() {
+		String query = " Delete from cliente where dni like '?' ";
+		Connection conn = (Connection) dbConexion.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, getDni());
+			stmt.executeUpdate();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+			System.out.println("Error al borrar el Cliente");
+		}
+	}
+
 }

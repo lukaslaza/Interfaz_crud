@@ -65,7 +65,7 @@ import javax.swing.SwingConstants;
 
 public class Principal {
 	// VARIABLES DE LA CLASE
-	private static String claseActual = "taller";
+	private static String claseActual = "cita";
 	private static int pagina = 1;
 	private static int columnasPagina = 30;
 	private static int totalRegistros = 1000;
@@ -104,7 +104,6 @@ public class Principal {
 
 		componentesPrincipal.get("panelFiltros").revalidate();
 		componentesPrincipal.get("panelFiltros").repaint();
-
 		((JPanel) componentesPrincipal.get("top")).add(panelFiltros, BorderLayout.SOUTH);
 		((JPanel) componentesPrincipal.get("top")).revalidate();
 		((JPanel) componentesPrincipal.get("top")).repaint();
@@ -112,8 +111,11 @@ public class Principal {
 	}
 
 	/**
-	 * CREA UN JTABLE QUE HEREDA DE UN ABSTRACTMODELTABLE PARA CREARLO Y LO INSERTA EN UN JSCROLLPANE
-	 * @param sentencia SI ESTA VACIA CONSIGUE LOS DATOS AUTOMATICAMENTE, SI NO USA LA SENTENCIA PARA CONSEGUIR LOS DATOS
+	 * CREA UN JTABLE QUE HEREDA DE UN ABSTRACTMODELTABLE PARA CREARLO Y LO INSERTA
+	 * EN UN JSCROLLPANE
+	 * 
+	 * @param sentencia            SI ESTA VACIA CONSIGUE LOS DATOS AUTOMATICAMENTE,
+	 *                             SI NO USA LA SENTENCIA PARA CONSEGUIR LOS DATOS
 	 * @param controladorPrincipal
 	 * @param componentesPrincipal
 	 */
@@ -134,7 +136,7 @@ public class Principal {
 
 		componentesPrincipal.put("table", table);
 
-		table.getModel().addTableModelListener(controladorPrincipal);
+		//table.getModel().addTableModelListener(controladorPrincipal);
 
 		((JScrollPane) componentesPrincipal.get("datos")).setViewportView(table);
 		((JScrollPane) componentesPrincipal.get("datos")).revalidate();
@@ -382,7 +384,7 @@ public class Principal {
 		crearAcciones(controladorPrincipal, componentesPrincipal);
 		crearBar(controladorPrincipal, componentesPrincipal);
 		CrearFiltros(controladorPrincipal, componentesPrincipal);
-		CrearListarDatos("",controladorPrincipal, componentesPrincipal);
+		CrearListarDatos("", controladorPrincipal, componentesPrincipal);
 		CrearFiltros(controladorPrincipal, componentesPrincipal);
 		CrearPaginador(controladorPrincipal, componentesPrincipal);
 
@@ -419,6 +421,7 @@ public class Principal {
 	public static String getClaseActual() {
 		return claseActual;
 	}
+
 
 	public static void setClaseActual(String claseActual) {
 		Principal.claseActual = claseActual.toLowerCase();

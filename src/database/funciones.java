@@ -31,7 +31,6 @@ import interfaz.Principal;
 import interfaz.TablaListar;
 
 public class funciones {
-
 	/**
 	 * La posicion del primer elemento de la pagina en funcion de su pagina. Por
 	 * ejemplo, de una pagina de 20 elementos, para la pagina 2 el primer elemento
@@ -51,7 +50,7 @@ public class funciones {
 	}
 
 	public static void main(String[] args) {
-		getMetadatosTablaArrayType();
+
 	}
 
 	// METADATOS
@@ -143,147 +142,17 @@ public class funciones {
 		return cabeceras;
 	}
 
-	public static ArrayList<Object> getDatosArray(int paginaActual, int registrosPagina) {
-		// Sentencia
-		String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " + registrosPagina * paginaActual
-				+ " , " + (registrosPagina * paginaActual) + registrosPagina + ";";
-		// COnexion
-		Connection conn = (Connection) dbConexion.getConnection();
-		// Arraylist donde guardaremos el Resulset
-		ArrayList<Object> clases = new ArrayList<Object>();
-
-		java.sql.Statement stmt = null;
-		try {
-			stmt = conn.createStatement();
-		} catch (SQLException errorStmt) {
-			errorStmt.printStackTrace();
-		}
-
-		try {
-			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
-			while (rs.next()) {
-				switch (Principal.getClaseActual()) {
-				case "taller":
-					//
-					clases.add(new Taller(rs.getString("nombre"), rs.getString("direccion"), rs.getString("telefono"),
-							rs.getFloat("latitud"), rs.getFloat("longitud")));
-					break;
-				case "cliente":
-					clases.add(new Cliente(rs.getString("dni"), rs.getString("nombre"), rs.getString("apellidos"),
-							rs.getString("telefono"), rs.getString("direccion"), rs.getString("id_usuario")));
-					break;
-				case "cita":
-					clases.add(new Cita(rs.getDate("fecha"), rs.getTime("hora"), rs.getInt("km"),
-							rs.getString("id_vehiculo"), rs.getString("id_taller")));
-					break;
-				case "vehiculo":
-					clases.add(new Vehiculo(rs.getString("matricula"), rs.getString("marca"), rs.getString("modelo"),
-							rs.getInt("anno"), rs.getString("color"), rs.getString("id_cliente"),
-							rs.getString("id_vehiculo_tipo")));
-					break;
-				case "vehiculo_tipo":
-					clases.add(new Vehiculo_Tipo(rs.getString("id"), rs.getString("descripcion")));
-					break;
-				case "usuario":
-					clases.add(new Usuario(rs.getString("usuario"), rs.getString("clave"), rs.getString("token"),
-							rs.getDate("fecha_inicio"), rs.getDate("fecha_fin")));
-					break;
-
-				default:
-					System.out.println("DEBES ACTUALIZAR ESTE METODO --> getDatos()");
-					break;
-				}
-
-			}
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-
-		Principal.setTotalRegistros(clases.size());
-
-		return clases;
-
-	}
-
-	public static ArrayList<Object> getDatosArray(String query) {
-		
-		if (query.equalsIgnoreCase(" ") || query.isEmpty() || query == null) {
-			query="SELECT * FROM " + Principal.getClaseActual();
-		} else {
-			
-		}
-		// Sentencia
-		/*
-		 * String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " +
-		 * registrosPagina * paginaActual + " , " + (registrosPagina * paginaActual) +
-		 * registrosPagina + ";";
-		 */
-		// COnexion
-		Connection conn = (Connection) dbConexion.getConnection();
-		// Arraylist donde guardaremos el Resulset
-		ArrayList<Object> clases = new ArrayList<Object>();
-
-		java.sql.Statement stmt = null;
-		try {
-			stmt = conn.createStatement();
-		} catch (SQLException errorStmt) {
-			errorStmt.printStackTrace();
-		}
-
-		try {
-			ResultSet rs = ((java.sql.Statement) stmt).executeQuery(query);
-			while (rs.next()) {
-				switch (Principal.getClaseActual()) {
-				case "taller":
-					clases.add(new Taller(rs.getString("nombre"), rs.getString("direccion"), rs.getString("telefono"),
-							rs.getFloat("latitud"), rs.getFloat("longitud")));
-					break;
-				case "cliente":
-					clases.add(new Cliente(rs.getString("dni"), rs.getString("nombre"), rs.getString("apellidos"),
-							rs.getString("telefono"), rs.getString("direccion"), rs.getString("id_usuario")));
-					break;
-				case "cita":
-					clases.add(new Cita(rs.getDate("fecha"), rs.getTime("hora"), rs.getInt("km"),
-							rs.getString("id_vehiculo"), rs.getString("id_taller")));
-					break;
-				case "vehiculo":
-					clases.add(new Vehiculo(rs.getString("matricula"), rs.getString("marca"), rs.getString("modelo"),
-							rs.getInt("anno"), rs.getString("color"), rs.getString("id_cliente"),
-							rs.getString("id_vehiculo_tipo")));
-					break;
-				case "vehiculo_tipo":
-					clases.add(new Vehiculo_Tipo(rs.getString("id"), rs.getString("descripcion")));
-					break;
-				case "usuario":
-					clases.add(new Usuario(rs.getString("usuario"), rs.getString("clave"), rs.getString("token"),
-							rs.getDate("fecha_inicio"), rs.getDate("fecha_fin")));
-					break;
-
-				default:
-					System.out.println("DEBES ACTUALIZAR ESTE METODO --> getDatos()");
-					break;
-				}
-
-			}
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-
-		Principal.setTotalRegistros(clases.size());
-
-		return clases;
-
-	}
-
+	
 	/**
 	 * DEVUELVE EL NUMERO MAXIMO DE COLUMNAS DE UN ALL
+	 * 
 	 * @return
 	 */
-	public static int getColumnMax() {
+	public static void getColumnMax(String query) {
 		int contador = 0;
-		String query = "SELECT * FROM " + Principal.getClaseActual();
+		if (query == "" || query == " ") {
+			query = "SELECT * FROM " + Principal.getClaseActual();
+		}
 		// COnexion
 		Connection conn = (Connection) dbConexion.getConnection();
 
@@ -303,16 +172,15 @@ public class funciones {
 		}
 
 		Principal.setTotalRegistros(contador);
-		
-		return contador;
+
 	}
 
-
-	public static Object[][] getDatos(int paginaActual, int registrosPagina) {
+	public static Object[][] getDatos() {
+		getColumnMax("");
 		// Sentencia
 		String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT "
-				+ ((paginaActual * registrosPagina) - registrosPagina) + " , " + (registrosPagina * paginaActual) + ";";
-
+				+ ((Principal.getPagina() * Principal.getColumnasPagina()) - Principal.getColumnasPagina()) + " , "
+				+ (Principal.getColumnasPagina() * Principal.getPagina()) + ";";
 		System.out.println(query);
 		// COnexion
 		Connection conn = (Connection) dbConexion.getConnection();
@@ -433,11 +301,11 @@ public class funciones {
 
 		}
 
-		Principal.setTotalRegistros(datos.length);
 		return datos;
 	}
 
 	public static Object[][] getDatos(String query) {
+		getColumnMax(query);
 		// Sentencia
 		/*
 		 * String query = "SELECT * FROM " + Principal.getClaseActual() + " LIMIT " +
@@ -629,7 +497,7 @@ public class funciones {
 							.setText("");
 		}
 
-		Principal.listarDatos(controladorPrincipal, componentesPrincipal);
+		Principal.CrearListarDatos("", controladorPrincipal, componentesPrincipal);
 
 	}
 
@@ -649,7 +517,7 @@ public class funciones {
 
 		}
 
-		Principal.listarDatos(sentencia, controladorPrincipal, componentesPrincipal);
+		Principal.CrearListarDatos(sentencia, controladorPrincipal, componentesPrincipal);
 	}
 
 }

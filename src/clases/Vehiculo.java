@@ -1,5 +1,9 @@
 package clases;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class Vehiculo {
 	// VALORES
 	private String matricula, marca, modelo, color, id_cliente, id_vehiculo_tipo;
@@ -15,6 +19,9 @@ public class Vehiculo {
 		setColor(color);
 		setId_cliente(id_cliente);
 		setId_vehiculo_tipo(id_vehiculo_tipo);
+	}
+
+	public Vehiculo() {
 	}
 
 	public String getMatricula() {
@@ -71,6 +78,58 @@ public class Vehiculo {
 
 	public void setAnno(int anno) {
 		this.anno = anno;
+	}
+
+	public void insertarse() {
+		String query = "INSERT INTO vehiculo (matricula, marca, modelo, anno, color, id_cliente, id_vehiculo_tipo) VALUES(?,?,?,?,?,?,?)";
+		Connection conn = (Connection) dbConexion.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, getMatricula());
+			stmt.setString(2, getMarca());
+			stmt.setString(3, getModelo());
+			stmt.setInt(4, getAnno());
+			stmt.setString(5, getColor());
+			stmt.setString(6, getId_cliente());
+			stmt.setString(7, getId_vehiculo_tipo());
+			stmt.executeUpdate();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+			System.out.println("Error al insertar el Vehiculo");
+		}
+	}
+
+	public void modificar(Vehiculo vehiculo) {
+		String query = "UPDATE vehiculo SET marca = '?', modelo = '?', anno = '?', "
+				+ "color = '?', id_cliente = '?', id_vehiculo_tipo = '?' WHERE matricula like '?'";
+		Connection conn = (Connection) dbConexion.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, getMarca());
+			stmt.setString(2, getModelo());
+			stmt.setInt(3, getAnno());
+			stmt.setString(4, getColor());
+			stmt.setString(5, getId_cliente());
+			stmt.setString(6, getId_vehiculo_tipo());
+			stmt.setString(7, getMatricula());
+			stmt.executeUpdate();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+			System.out.println("Error al insertar el Vehiculo");
+		}
+	}
+
+	public void borrarse() {
+		String query = " Delete from vehiculo where matricula like '?' ";
+		Connection conn = (Connection) dbConexion.getConnection();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, getMatricula());
+			stmt.executeUpdate();
+		} catch (SQLException errorStmt) {
+			errorStmt.printStackTrace();
+			System.out.println("Error al borrar el Vehiculo");
+		}
 	}
 
 }

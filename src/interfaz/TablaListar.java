@@ -27,7 +27,7 @@ public class TablaListar extends AbstractTableModel {
 
 	public TablaListar() {
 		this.columnNames = funciones.getMetadatosTabla();
-		this.data = funciones.getDatos(Principal.getPagina(), Principal.getColumnasPagina());
+		this.data = funciones.getDatos();
 	}
 
 	public int getColumnCount() {

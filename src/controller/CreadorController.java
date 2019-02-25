@@ -5,16 +5,27 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.xml.bind.ParseConversionEvent;
 
+import org.mariadb.jdbc.internal.com.send.authentication.ClearPasswordPlugin;
+
+import clases.Cita;
+import clases.Cliente;
+import clases.Taller;
+import clases.Usuario;
+import clases.Vehiculo;
+import clases.Vehiculo_Tipo;
 import clases.dbConexion;
 import database.funciones;
 import funciones.funcionesError;
@@ -34,89 +45,70 @@ public class CreadorController implements ActionListener {
 		String accion = arg0.getActionCommand();
 
 		if (accion.equalsIgnoreCase("CancelarCreador")) {
-			System.out.println("hola");
+			System.out.println("Cerrando Creador de Clases");
 			((JFrame) componentesCreador.get("frame")).dispose();
 		}
 		if (accion.equalsIgnoreCase("InsertarCreador")) {
-			insertarQuery(getDatos(this, componentesCreador));
+			crearClase(this, componentesCreador);
 		}
 	}
 
-	// TODO POSIBLE PROBLEMA CON EL TIPO DE DATOS
-	// TODO COMPROBAR QUE LOS CAMPOS MAS IMPORTANTES NO ESTEN VACIOS HACIENDO USO
-	// DEL CONSTRUCTOR DE LA CLASE CORRESPONDIENTE
-	// SOLTAR ERROR SI ES ASI
-	public String getDatos(CreadorController controladorPrincipal, HashMap<String, Component> componentesPrincipal) {
-		
-		/*INSERT INTO Customer (FirstName, LastName, City, Country, Phone)
-		VALUES ('Craig', 'Smith', 'New York', 'USA', 1-01-993 2800)*/
-		
-		String sentencia = "INSERT INTO " + Principal.getClaseActual()+" ";
+	public void crearClase(CreadorController controladorCreador, HashMap<String, Component> componentesCreador) {
 		for (int i = 0; i < funciones.getMetadatosTablaArray().size() - 1; i++) {
-				if ( ((JTextField) componentesCreador.get("txtCreador" + funciones.getMetadatosTablaArray().get(i))) instanceof JTextField  ){
-					if (componentesCreador.get("txtCreador" + funciones.getMetadatosTablaArray().get(i)) ==) {
-						
-					}
-				}
-		}
-		
-		
-		 sentencia = "INSERT INTO " + Principal.getClaseActual() + " values (";
+			switch (Principal.getClaseActual().toLowerCase()) {
+			case "cita":
+				Cita cita = new Cita();
+				/*
+				 * cita.setFecha(fecha); cita.setHora(hora); cita.setKm(
+				 * Integer.parseInt((((JFormattedTextField)componentesCreador.get("txtCreador" +
+				 * funciones.getMetadatosTablaArray().get(i))).getText())));
+				 * cita.setId_vehiculo(id_vehiculo); cita.setId_taller(id_taller);
+				 */
 
-		for (int i = 0; i < funciones.getMetadatosTablaArray().size() - 1; i++) {
-			if (funciones.getMetadatosTablaArrayType().get(i) == 1 || funciones.getMetadatosTablaArrayType().get(i) == 12) {
-				if (componentesCreador
-						.get("txtCreador" + funciones.getMetadatosTablaArray().get(i)) instanceof JTextField) {
-					sentencia = sentencia + " \"";
-					sentencia = sentencia + ((JTextField) componentesCreador
-							.get("txtCreador" + funciones.getMetadatosTablaArray().get(i))).getText().trim();
-					if (funciones.getMetadatosTablaArray().size() - 1 == i + 1) {
-						sentencia = sentencia + "\"";
-					} else {
-						sentencia = sentencia + "\",";
-					}
-				}
-			}else {
-				if (componentesCreador
-						.get("txtCreador" + funciones.getMetadatosTablaArray().get(i)) instanceof JTextField) {
-					sentencia = sentencia + " ";
-					sentencia = sentencia + ((JTextField) componentesCreador
-							.get("txtCreador" + funciones.getMetadatosTablaArray().get(i))).getText().trim();
-					if (funciones.getMetadatosTablaArray().size() - 1 == i + 1) {
-						sentencia = sentencia + "";
-					} else {
-						sentencia = sentencia + ",";
-					}
-				}
+				break;
+			case "taller":
+				Taller taller = new Taller();
+				/*
+				 * taller.setNombre(); taller.setDireccion(); taller.setTelefono();
+				 * taller.setLatitud(); taller.setLongitud();
+				 */
+				break;
+			case "vehiculo":
+				Vehiculo vehiculo = new Vehiculo();
+				/*
+				 * vehiculo.setMatricula(matricula); vehiculo.setMarca(marca);
+				 * vehiculo.setModelo(modelo); vehiculo.setAnno(anno); vehiculo.setColor(color);
+				 * vehiculo.setId_cliente(vehiculo);
+				 * vehiculo.setId_vehiculo_tipo(id_vehiculo_tipo);
+				 */
+				break;
+			case "vehiculo_tipo":
+				Vehiculo_Tipo vehiculo_Tipo = new Vehiculo_Tipo();
+				/*
+				 * vehiculo_Tipo.setId(id); vehiculo_Tipo.setDescripcion(descripcion);
+				 */
+
+				break;
+			case "cliente":
+				Cliente cliente = new Cliente();
+				/*
+				 * cliente.setDni(dni); cliente.setNombre(nombre);
+				 * cliente.setApellidos(apellidos); cliente.setTelefono(telefono);
+				 * cliente.setDireccion(direccion); cliente.setId_usuario(id_usuario);
+				 */
+				break;
+			case "usuario":
+				Usuario usuario = new Usuario();
+				/*usuario.setUsuario(usuario);
+				usuario.setClave(clave);*/
+
+				break;
+
+			default:
+				System.out.println("Tienes que actualizar el metodo de CrearClase()");
+				break;
 			}
-
-		}
-		sentencia = sentencia + ");";
-System.out.println(sentencia);
-		return sentencia;
-	}
-
-	public void insertarQuery(String query) {
-
-		Connection conn = (Connection) dbConexion.getConnection();
-		ArrayList<String> metadatos = new ArrayList<String>();
-		java.sql.Statement stmt = null;
-		try {
-			stmt = conn.createStatement();
-		} catch (SQLException errorStmt) {
-			errorStmt.printStackTrace();
 		}
 
-		// EJECUTAMLS SENTENCIA
-		try {
-			stmt.executeUpdate(query);
-		} catch (SQLException e) {
-			System.out.println("Ha habido un error");
-			e.printStackTrace();
-			funcionesError.error_msg((Frame) componentesCreador.get("frame"),
-					e.getMessage(), "Error de inserción");
-		}
-		
-		
 	}
 }
