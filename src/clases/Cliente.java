@@ -121,11 +121,10 @@ public class Cliente {
 	}
 
 	public void borrarse() {
-		String query = " Delete from cliente where dni like '?' ";
+		String query = " Delete from cliente where dni like '"+getDni()+"' ";
 		Connection conn = (Connection) dbConexion.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setString(1, getDni());
 			stmt.executeUpdate();
 		} catch (SQLException errorStmt) {
 			errorStmt.printStackTrace();

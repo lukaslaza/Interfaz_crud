@@ -119,11 +119,10 @@ public class Usuario {
 	}
 
 	public void borrarse() {
-		String query = " Delete from usuario wehere usuario like '?' ";
+		String query = " Delete from usuario wehere usuario like '"+getUsuario()+"' ";
 		Connection conn = (Connection) dbConexion.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setString(1, getUsuario());
 			stmt.executeUpdate();
 		} catch (SQLException errorStmt) {
 			errorStmt.printStackTrace();

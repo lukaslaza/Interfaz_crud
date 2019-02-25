@@ -62,11 +62,10 @@ public class Vehiculo_Tipo {
 	}
 
 	public void borrarse() {
-		String query = " Delete from vehiculo_tipo where id like '?' ";
+		String query = " Delete from vehiculo_tipo where id like '"+getId()+"' ";
 		Connection conn = (Connection) dbConexion.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setString(1, getId());
 			stmt.executeUpdate();
 		} catch (SQLException errorStmt) {
 			errorStmt.printStackTrace();

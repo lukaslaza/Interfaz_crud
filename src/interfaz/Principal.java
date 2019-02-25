@@ -65,7 +65,7 @@ import javax.swing.SwingConstants;
 
 public class Principal {
 	// VARIABLES DE LA CLASE
-	private static String claseActual = "cita";
+	private static String claseActual = "cliente";
 	private static int pagina = 1;
 	private static int columnasPagina = 30;
 	private static int totalRegistros = 1000;

@@ -120,11 +120,10 @@ public class Vehiculo {
 	}
 
 	public void borrarse() {
-		String query = " Delete from vehiculo where matricula like '?' ";
+		String query = " Delete from vehiculo where matricula like '"+getMatricula()+"' ";
 		Connection conn = (Connection) dbConexion.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setString(1, getMatricula());
 			stmt.executeUpdate();
 		} catch (SQLException errorStmt) {
 			errorStmt.printStackTrace();

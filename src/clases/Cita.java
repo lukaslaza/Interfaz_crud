@@ -72,7 +72,7 @@ public class Cita {
 	public void setKm(int km) {
 		this.km = km;
 	}
-	
+
 	public void insertarse() {
 		String query = "INSERT INTO cita(fecha, hora, km, id_vehiculo, id_taller) VALUES(?,?,?,?,?)";
 		Connection conn = (Connection) dbConexion.getConnection();
@@ -99,7 +99,7 @@ public class Cita {
 			stmt.setTime(1, cita.getHora());
 			stmt.setInt(2, cita.getKm());
 			stmt.setString(3, cita.getId_taller());
-			stmt.setDate(4, cita.getFecha());	
+			stmt.setDate(4, cita.getFecha());
 			stmt.setString(5, cita.getId_vehiculo());
 			stmt.executeUpdate();
 		} catch (SQLException errorStmt) {
@@ -109,12 +109,11 @@ public class Cita {
 	}
 
 	public void borrarse() {
-		String query = " Delete from cita wehere fecha = '?' and id_vehiculo like '?' ";
+		String query = " Delete from cita wehere fecha = '" + getFecha() + "' and id_vehiculo like '" + getId_vehiculo()
+				+ "' ";
 		Connection conn = (Connection) dbConexion.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(query);
-			stmt.setDate(1, getFecha());
-			stmt.setString(2, getId_vehiculo());
 			stmt.executeUpdate();
 		} catch (SQLException errorStmt) {
 			errorStmt.printStackTrace();
