@@ -49,65 +49,108 @@ public class CreadorController implements ActionListener {
 			((JFrame) componentesCreador.get("frame")).dispose();
 		}
 		if (accion.equalsIgnoreCase("InsertarCreador")) {
-			crearClase(this, componentesCreador);
+			try {
+
+				crearClase(this, componentesCreador);
+
+				funcionesError.aviso_msg(((JFrame) componentesCreador.get("frame")), "¡Insertado!",
+						"Insercion Correcta");
+			} catch (SQLException e) {
+				funcionesError.error_msg(((JFrame) componentesCreador.get("frame")), "¡Error al insertar!",
+						"Insercion Fallida");
+			} finally {
+				((JFrame) componentesCreador.get("frame")).dispose();
+			}
 		}
 	}
 
-	public void crearClase(CreadorController controladorCreador, HashMap<String, Component> componentesCreador) {
-		for (int i = 0; i < funciones.getMetadatosTablaArray().size() - 1; i++) {
-			switch (Principal.getClaseActual().toLowerCase()) {
-			case "cita":
-				Cita cita = new Cita();
-				/*
-				 * cita.setFecha(fecha); cita.setHora(hora); cita.setKm(
-				 * Integer.parseInt((((JFormattedTextField)componentesCreador.get("txtCreador" +
-				 * funciones.getMetadatosTablaArray().get(i))).getText())));
-				 * cita.setId_vehiculo(id_vehiculo); cita.setId_taller(id_taller);
-				 */
+	// TODO problema con el tipo de datos recogidos.
+	public void crearClase(CreadorController controladorCreador, HashMap<String, Component> componentesCreador) throws SQLException{
 
-				break;
-			case "taller":
-				Taller taller = new Taller();
-				/*
-				 * taller.setNombre(); taller.setDireccion(); taller.setTelefono();
-				 * taller.setLatitud(); taller.setLongitud();
-				 */
-				break;
-			case "vehiculo":
-				Vehiculo vehiculo = new Vehiculo();
-				/*
-				 * vehiculo.setMatricula(matricula); vehiculo.setMarca(marca);
-				 * vehiculo.setModelo(modelo); vehiculo.setAnno(anno); vehiculo.setColor(color);
-				 * vehiculo.setId_cliente(vehiculo);
-				 * vehiculo.setId_vehiculo_tipo(id_vehiculo_tipo);
-				 */
-				break;
-			case "vehiculo_tipo":
-				Vehiculo_Tipo vehiculo_Tipo = new Vehiculo_Tipo();
-				/*
-				 * vehiculo_Tipo.setId(id); vehiculo_Tipo.setDescripcion(descripcion);
-				 */
+		switch (Principal.getClaseActual().toLowerCase()) {
+		case "cita":
+			// ((JFormattedTextField)
+			// componentesCreador.get("txtCreador"+funciones.getMetadatosTablaArray().get(i))).getText())
+			Cita cita = new Cita();
+			// cita.setFecha(fehca);
+			// cita.setHora(hora);
+			cita.setKm(Integer.parseInt((((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(2))).getText())));
+			cita.setId_vehiculo(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(3))).getText());
+			cita.setId_taller(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(4))).getText());
+			cita.insertarse();
+			break;
+		case "taller":
+			Taller taller = new Taller();
+			taller.setNombre(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(0))).getText());
+			taller.setDireccion(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(1))).getText());
+			taller.setTelefono(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(2))).getText());
+			// taller.setLatitud();
+			// taller.setLongitud();
+			taller.insertarse();
+			break;
+		case "vehiculo":
+			Vehiculo vehiculo = new Vehiculo();
+			vehiculo.setMatricula(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(0))).getText());
+			vehiculo.setMarca(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(1))).getText());
+			vehiculo.setModelo(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(2))).getText());
+			vehiculo.setAnno(Integer.parseInt(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(3))).getText()));
+			vehiculo.setColor(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(4))).getText());
+			vehiculo.setId_cliente(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(5))).getText());
+			vehiculo.setId_vehiculo_tipo(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(6))).getText());
+			vehiculo.insertarse();
+			break;
+		case "vehiculo_tipo":
+			Vehiculo_Tipo vehiculo_Tipo = new Vehiculo_Tipo();
 
-				break;
-			case "cliente":
-				Cliente cliente = new Cliente();
-				/*
-				 * cliente.setDni(dni); cliente.setNombre(nombre);
-				 * cliente.setApellidos(apellidos); cliente.setTelefono(telefono);
-				 * cliente.setDireccion(direccion); cliente.setId_usuario(id_usuario);
-				 */
-				break;
-			case "usuario":
-				Usuario usuario = new Usuario();
-				/*usuario.setUsuario(usuario);
-				usuario.setClave(clave);*/
+			vehiculo_Tipo.setId(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(0))).getText());
+			vehiculo_Tipo.setDescripcion(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(1))).getText());
+			vehiculo_Tipo.insertarse();
+			break;
+		case "cliente":
+			Cliente cliente = new Cliente();
+			cliente.setDni(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(0))).getText());
+			cliente.setNombre(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(1))).getText());
+			cliente.setApellidos(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(2))).getText());
+			cliente.setTelefono(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(3))).getText());
+			cliente.setDireccion(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(4))).getText());
+			cliente.setId_usuario(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(5))).getText());
+			cliente.insertarse();
+			break;
+		case "usuario":
+			Usuario usuario = new Usuario();
 
-				break;
+			usuario.setUsuario(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(0))).getText());
+			usuario.setClave(((JFormattedTextField) componentesCreador
+					.get("txtCreador" + funciones.getMetadatosTablaArray().get(1))).getText());
+			usuario.insertarse();
+			break;
 
-			default:
-				System.out.println("Tienes que actualizar el metodo de CrearClase()");
-				break;
-			}
+		default:
+			System.out.println("Tienes que actualizar el metodo de CrearClase()");
+			break;
+
 		}
 
 	}

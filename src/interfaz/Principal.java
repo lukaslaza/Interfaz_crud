@@ -1,3 +1,4 @@
+
 package interfaz;
 
 import java.awt.EventQueue;
@@ -65,7 +66,7 @@ import javax.swing.SwingConstants;
 
 public class Principal {
 	// VARIABLES DE LA CLASE
-	private static String claseActual = "cliente";
+	private static String claseActual = "taller";
 	private static int pagina = 1;
 	private static int columnasPagina = 30;
 	private static int totalRegistros = 1000;

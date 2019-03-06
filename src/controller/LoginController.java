@@ -58,15 +58,6 @@ public class LoginController implements ActionListener, KeyListener {
 				funcionesError.error_msg(frame, "Los campos no pueden estar vacios", "Campos en blanco");
 				vaciarCampos();
 			} else {
-
-				// TODO comprobar que los datos pasados por parametros no estan vacios o tengan
-				// signos, etc
-				try {
-					peticion(userName, userpass);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 				// Comprobar login con los web services
 				try {
 					if (peticion(userName, userpass)==true) {
@@ -147,16 +138,15 @@ public class LoginController implements ActionListener, KeyListener {
 			}
 			in.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			conn.disconnect();
 		}
 
 		JSONObject response = new JSONObject(content.toString());
-
+System.out.println(response.getBoolean("estado"));
 		if (response.getBoolean("estado")) {
-			return true;
+			return true;	
 		}
 		return false;
 

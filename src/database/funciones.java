@@ -520,4 +520,23 @@ public class funciones {
 		Principal.CrearListarDatos(sentencia, controladorPrincipal, componentesPrincipal);
 	}
 
+	public static String sentenciaFiltros(PrincipalController controladorPrincipal,
+			HashMap<String, Component> componentesPrincipal) {
+		String sentencia = "Select * from " + Principal.getClaseActual() + " where true ";
+		String clase = "";
+		for (int i = 0; i < getMetadatosTablaArray().size() - 1; i++) {
+			clase = ("txtFiltro" + Principal.getClaseActual() + "_" + getMetadatosTablaArray().get(i).toLowerCase());
+			if (((JTextField) componentesPrincipal.get(clase)).getText() == null
+					|| ((JTextField) componentesPrincipal.get(clase)).getText() == ""
+					|| ((JTextField) componentesPrincipal.get(clase)).getText().isEmpty()) {
+			} else {
+				sentencia = sentencia + "and " + getMetadatosTablaArray().get(i).toLowerCase() + " like " + "'%"
+						+ ((JTextField) componentesPrincipal.get(clase)).getText() + "%' ";
+			}
+
+		}
+
+		return sentencia;
+	}
+
 }

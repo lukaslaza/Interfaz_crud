@@ -14,5 +14,8 @@ public class funcionesError {
 	public static void error_msg(Frame fr, String msg, String msgSup) {
 		JOptionPane.showMessageDialog(fr, msg, msgSup, JOptionPane.ERROR_MESSAGE);
 	}
+	public static void aviso_msg(Frame fr, String msg, String msgSup) {
+		JOptionPane.showMessageDialog(fr, msg, msgSup, JOptionPane.OK_OPTION);
+	}
 	
 }

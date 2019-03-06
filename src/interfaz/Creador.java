@@ -101,67 +101,72 @@ public class Creador {
 		frame.getContentPane().add(formulario, BorderLayout.CENTER);
 
 		formulario.setLayout(new MigLayout("", "[89px][89px]", "[87px][87px]"));
-		
+
 		for (int j = 0; j < funciones.getMetadatosTablaArrayType().size(); j++) {
 			System.out.println(funciones.getMetadatosTablaArrayType().get(j));
 		}
 
 		for (int i = 0; i < funciones.getMetadatosTablaArray().size() - 1; i++) {
 
-			//STRING
-			//1 --> string
-			//12 --> big string
-			if (funciones.getMetadatosTablaArrayType().get(i) == 1
-					|| funciones.getMetadatosTablaArrayType().get(i) == 12) {
-				componentesCreador.put("lblCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
-				componentesCreador.put("txtCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JFormattedTextField(new String()));
-			}
-			//INTEGER
-			//-6 --> small int
-			if (funciones.getMetadatosTablaArrayType().get(i) == 2
-					|| funciones.getMetadatosTablaArrayType().get(i) == 4 || funciones.getMetadatosTablaArrayType().get(i) == -6) {
-				componentesCreador.put("lblCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
-				componentesCreador.put("txtCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JFormattedTextField(new Integer(2000)));
-			}
-			//FECHA
-			if (funciones.getMetadatosTablaArrayType().get(i) == 91) {
-				componentesCreador.put("lblCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
-				componentesCreador.put("txtCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JFormattedTextField(new Date().toString()));
-			}
-			//FECHA2
-			if (funciones.getMetadatosTablaArrayType().get(i) == 93) {
-				componentesCreador.put("lblCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
-				componentesCreador.put("txtCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JFormattedTextField());
-			}
-			//Hora
-			if (funciones.getMetadatosTablaArrayType().get(i) == 92) {
-				componentesCreador.put("lblCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
-				componentesCreador.put("txtCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JFormattedTextField());
-			}
-			//Float
-			if (funciones.getMetadatosTablaArrayType().get(i) == 7) {
-				componentesCreador.put("lblCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
-				componentesCreador.put("txtCreador" + funciones.getMetadatosTablaArray().get(i),
-						new JFormattedTextField());
-			}
+			componentesCreador.put("lblCreador" + funciones.getMetadatosTablaArray().get(i),
+					new JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
+			componentesCreador.put("txtCreador" + funciones.getMetadatosTablaArray().get(i),
+					new JFormattedTextField());
+			
+
 			formulario.add(componentesCreador.get("lblCreador" + funciones.getMetadatosTablaArray().get(i)),
 					"cell 0 " + i + ",growx,aligny center");
 			formulario.add(componentesCreador.get("txtCreador" + funciones.getMetadatosTablaArray().get(i)),
 					"cell 1 " + i + ",growx,aligny center");
+			/*
+			 * 
+			 * //STRING //1 --> string //12 --> big string if
+			 * (funciones.getMetadatosTablaArrayType().get(i) == 1 ||
+			 * funciones.getMetadatosTablaArrayType().get(i) == 12) {
+			 * componentesCreador.put("lblCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new
+			 * JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
+			 * componentesCreador.put("txtCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new JFormattedTextField(new
+			 * String())); } //INTEGER //-6 --> small int if
+			 * (funciones.getMetadatosTablaArrayType().get(i) == 2 ||
+			 * funciones.getMetadatosTablaArrayType().get(i) == 4 ||
+			 * funciones.getMetadatosTablaArrayType().get(i) == -6) {
+			 * componentesCreador.put("lblCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new
+			 * JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
+			 * componentesCreador.put("txtCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new JFormattedTextField(new
+			 * Integer(2000))); } //FECHA if (funciones.getMetadatosTablaArrayType().get(i)
+			 * == 91) { componentesCreador.put("lblCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new
+			 * JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
+			 * componentesCreador.put("txtCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new JFormattedTextField(new
+			 * Date().toString())); } //FECHA2 if
+			 * (funciones.getMetadatosTablaArrayType().get(i) == 93) {
+			 * componentesCreador.put("lblCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new
+			 * JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
+			 * componentesCreador.put("txtCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new JFormattedTextField()); }
+			 * //Hora if (funciones.getMetadatosTablaArrayType().get(i) == 92) {
+			 * componentesCreador.put("lblCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new
+			 * JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
+			 * componentesCreador.put("txtCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new JFormattedTextField()); }
+			 * //Float if (funciones.getMetadatosTablaArrayType().get(i) == 7) {
+			 * componentesCreador.put("lblCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new
+			 * JLabel(funciones.getMetadatosTablaArray().get(i) + " -->"));
+			 * componentesCreador.put("txtCreador" +
+			 * funciones.getMetadatosTablaArray().get(i), new JFormattedTextField()); }
+			 * 
+			 */
+			
 
 		}
-
 		CreadorController controlador = new CreadorController(componentesCreador);
 
 		btnCreadorCancelar.addActionListener(controlador);

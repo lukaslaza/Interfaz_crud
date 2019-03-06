@@ -84,7 +84,7 @@ public class Usuario {
 	}
 
 	public void insertarse() {
-		String query = "INSERT INTO ususario (usuario, clave, token, fecha_inicio, fecha_fin) VALUES(?,?,?,?,?)";
+		String query = "INSERT INTO usuario (usuario, clave, token, fecha_inicio, fecha_fin) VALUES(?,?,?,?,?)";
 		Connection conn = (Connection) dbConexion.getConnection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(query);
